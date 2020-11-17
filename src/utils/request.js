@@ -1,26 +1,36 @@
 import axios from 'axios'
+import store from '@/store'
+export const request = axios.create({
+  // 接口的基准路径
+  baseURL: 'http://ttapi.research.itcast.cn/',
 
-export function request(config) {
-  const instance = axios.create({
-    baseURL: "http://ttapi.research.itcast.cn",
-    timeout: 6000,
-    
-  });
+  // 自定义后端返回的原始数据
+  // data: 后端返回的原始数据，说白了就是 JSON 格式的字符串
+  transformResponse: [function (data) {
+    try {
+      return JSONBig.parse(data)
+    } catch (err) {
+      return data
+    }
 
-  //请求拦截
-  instance.interceptors.request.use(config => {
-    return config;
-  }, err => {
-    console.log(err)
-  })
+    // axios 默认会在内部这样来处理后端返回的数据
+    // return JSON.parse(data)
+  }]
+})
 
-  //响应拦截
-  instance.interceptors.response.use(res => {
-    return res.data
-  }, error => {
-    console.log(error)
-  })
+// 请求拦截器
+// Add a request interceptor
+request.interceptors.request.use(function (config) {
+  // 请求发起会经过这里
+  // config：本次请求的请求配置对象
+  const { user } = store.state
+  if (user && user.token) {
+    config.headers.Authorization = `Bearer ${user.token}`
+  }
 
-
-  return instance(config)
-}
+  // 注意：这里务必要返回 config 配置对象，否则请求就停在这里出不去了
+  return config
+}, function (error) {
+  // 如果请求出错了（还没有发出去）会进入这里
+  return Promise.reject(error)
+})

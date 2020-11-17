@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 import {
   Button,
   Popup,
@@ -9,7 +10,9 @@ import {
   Tab,
   NavBar,
   Form,
-  Field 
+  Field,
+  Toast,
+  Notify 
 } from 'vant';
 
 Vue.use(Button)
@@ -22,3 +25,6 @@ Vue.use(Button)
 .use(NavBar)
 .use(Form)
 .use(Field)
+
+Vue.prototype.$toast = Toast
+Vue.prototype.$notify = Notify 
