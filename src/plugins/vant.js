@@ -12,7 +12,15 @@ import {
   Form,
   Field,
   Toast,
-  Notify 
+  Notify,
+  CountDown,
+  Tabbar,
+  TabbarItem,
+  Image as VanImage,
+  Grid,
+  GridItem,
+  Cell,
+  CellGroup
 } from 'vant';
 
 Vue.use(Button)
@@ -25,6 +33,13 @@ Vue.use(Button)
 .use(NavBar)
 .use(Form)
 .use(Field)
-
+.use(CountDown)
+.use(Tabbar)
+.use(TabbarItem)
+.use(VanImage)
+.use(Grid)
+.use(GridItem)
+.use(Cell)
+.use(CellGroup)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 

@@ -6,16 +6,16 @@ export const request = axios.create({
 
   // 自定义后端返回的原始数据
   // data: 后端返回的原始数据，说白了就是 JSON 格式的字符串
-  transformResponse: [function (data) {
-    try {
-      return JSONBig.parse(data)
-    } catch (err) {
-      return data
-    }
+  // transformResponse: [function (data) {
+  //   try {
+  //     return JSONBig.parse(data)
+  //   } catch (err) {
+  //     return data
+  //   }
 
-    // axios 默认会在内部这样来处理后端返回的数据
-    // return JSON.parse(data)
-  }]
+  //   //   // axios 默认会在内部这样来处理后端返回的数据
+  //   //   // return JSON.parse(data)
+  // }]
 })
 
 // 请求拦截器
@@ -23,7 +23,9 @@ export const request = axios.create({
 request.interceptors.request.use(function (config) {
   // 请求发起会经过这里
   // config：本次请求的请求配置对象
-  const { user } = store.state
+  const {
+    user
+  } = store.state
   if (user && user.token) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
