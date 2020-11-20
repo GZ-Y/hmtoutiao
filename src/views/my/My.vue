@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="header">
+    <div class="header" v-if="user">
       <div class="h_content">
         <van-image width="70" height="70" round :src="require('../../assets/image/tgb.jpg')" />
         <span class="left_text">淘股吧</span>
@@ -25,7 +25,7 @@
         </van-grid-item>
       </van-grid>
     </div>
-    <div class="header_not_login">
+    <div class="header_not_login" v-else>
       <div class="containe">
         <van-image width="70" height="70" round src="" />
         <span @click="jumpLogin">未登录/注册</span>
@@ -48,11 +48,11 @@ export default {
   data() {
     return {};
   },
-  created(){
-    console.log(this.user);
+  created() {
+    // console.log(this.user);
   },
   computed: {
-    ...mapState(['user'])
+    ...mapState(["user"])
   },
   methods: {
     jumpLogin() {
@@ -66,8 +66,19 @@ export default {
       });
     },
     onLogOut() {
-      console.log(123);
-      this.$store.commit("eliminate");
+      this.$dialog
+        .confirm({
+          title: "退出",
+          message: "您确定要退出登录吗？"
+        })
+        .then(() => {
+          // on confirm
+          this.$store.commit("eliminate");
+        })
+        .catch(() => {
+          // on cancel
+          return;
+        });
     }
   }
 };

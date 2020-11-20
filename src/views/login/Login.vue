@@ -63,7 +63,14 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    this.getCaptchaData("13911111111").then(res=>{
+      console.log(res);
+    })
+  },
+  mounted(){
+
+  },
   methods: {
     //左侧箭头点击事件
     onNextLevel(){
@@ -118,6 +125,7 @@ export default {
         });
         window.localStorage.setItem('user',JSON.stringify(token));
         this.$store.commit('increment');
+        this.$router.push('/my');
       } catch (err) {
         if (err.request.status === 400) {
           this.$toast({

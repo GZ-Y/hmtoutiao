@@ -20,7 +20,10 @@ import {
   Grid,
   GridItem,
   Cell,
-  CellGroup
+  CellGroup,
+  Dialog,
+  Search,
+  List 
 } from 'vant';
 
 Vue.use(Button)
@@ -41,5 +44,8 @@ Vue.use(Button)
 .use(GridItem)
 .use(Cell)
 .use(CellGroup)
+.use(Search)
+.use(List)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
+Vue.prototype.$dialog = Dialog 
