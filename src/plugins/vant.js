@@ -23,7 +23,8 @@ import {
   CellGroup,
   Dialog,
   Search,
-  List 
+  List,
+  PullRefresh 
 } from 'vant';
 
 Vue.use(Button)
@@ -46,6 +47,7 @@ Vue.use(Button)
 .use(CellGroup)
 .use(Search)
 .use(List)
+.use(PullRefresh)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
 Vue.prototype.$dialog = Dialog 

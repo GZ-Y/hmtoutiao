@@ -1,51 +1,35 @@
 <template>
   <div class="home">
     <van-search placeholder="请输入搜索关键词" />
-    <van-tabs sticky >
-      <van-tab v-for="item in channelsList"  :key='item.id' :title="item.name">
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-          <van-cell v-for="item2 in list" :key="item2.aut_id" :title="item2.title" />
-        </van-list>
+    <van-tabs sticky>
+      <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
+        <!-- <div slot="title" @click="onClickId(item.id)">{{item.name}}</div> -->
+        <home-content :channel="channels"></home-content>
       </van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script>
-import {
-  getAllChannelsData,
-  getChannelsArticlesData
-} from "../../utils/home.js";
+import { getAllChannelsData } from "../../utils/home.js";
+import HomeContent from "./components/HomeContent";
+// import { raw } from 'express';
+// import { log } from 'util';
 export default {
   name: "Home",
   data() {
     return {
-      channelsList: [],
-      list: [],
-      params:{
-        channel_id: 2,
-        timestamp:Date.now(),
-        with_top:1
-      },
-      loading: false,
-      finished: false
+      channelsList: []
     };
+  },
+  components: {
+    HomeContent
   },
   created() {
     this.getAllChannels();
   },
 
   methods: {
-    onbtn(id){
-      console.log(id);
-    },
-    async onLoad(id) {
-      // this.params.channel_id = id;
-      const {data} = await getChannelsArticlesData(this.params);
-      const {results:res} = data.data;
-      this.list = res
-      // console.log(this.list);
-    },
     async getAllChannels() {
       const { data } = await getAllChannelsData();
       const { channels } = data.data;
@@ -71,7 +55,6 @@ export default {
     ::v-deep .van-tabs__line {
       background-color: @color_b;
     }
-    
   }
 }
 </style>
