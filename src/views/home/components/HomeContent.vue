@@ -10,7 +10,8 @@
               <div><img :src="item.cover.images[1]" alt=""></div>
               <div><img :src="item.cover.images[2]" alt=""></div>
             </div>
-            <div>{{item.aut_name}}</div>
+            <div class="slot_block" v-if="item.cover.images.length === 1"></div>
+            <div class="slot_label_name">{{item.aut_name}}</div>
           </div>
           <div class="slot-extra" v-if="item.cover.images.length === 1" slot="extra">
             <img :src="item.cover.images[0]" alt="">
@@ -23,19 +24,22 @@
 
 <script>
 import { getChannelsArticlesData } from "../../../utils/home.js";
+// import { log } from "util";
 export default {
   name: "HomeContent",
   data() {
     return {
       list: [],
+      timestamp: null,
       params: {
         channel_id: this.channel.id,
-        timestamp: Date.now(),
+        timestamp: this.timestamp || Date.now(),
         with_top: 1
       },
       loading: false,
       finished: false,
-      isLoading: false
+      isLoading: false,
+      token: 0
     };
   },
   props: {
@@ -51,31 +55,41 @@ export default {
     },
     async onLoad() {
       const { data } = await getChannelsArticlesData(this.params);
-      const { results: res } = data.data;
+      // console.log(data);
+      const { results: res, pre_timestamp: time } = data.data;
+      console.log(time);
       this.list.push(...res);
-      console.log(this.list);
 
       this.loading = false;
+
+      this.timestamp = Date.now() - 10000;
+      // console.log(Date.now());
+      // console.log(this.timestamp);
     }
   }
 };
 </script>
 <style scoped lang="less">
 ::v-deep .van-list {
-  .slot_label {
-    .slot_label_wrap {
-      display: flex;
-      div:not(:last-child) {
-        margin-left: 10px;
-      }
-      div {
-        flex: 1;
+  
+    .slot_label {
+      .slot_label_wrap {
+        display: flex;
+        div:not(:last-child) {
+          margin-right: 10px;
+        }
+        div {
+          flex: 1;
 
-        img {
-          width: 100%;
-          height: 100px;
+          img {
+            width: 100%;
+            height: 100px;
+          }
         }
       }
+    .slot_block{
+      height: calc(107px - 42px);
+      background-color: white;
     }
   }
   .slot-extra {

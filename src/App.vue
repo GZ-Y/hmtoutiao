@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
+    
     <van-tabbar v-model="active" route>
       <van-tabbar-item icon="home-o" to="/home">首页</van-tabbar-item>
       <van-tabbar-item icon="search" to="/qa">问答</van-tabbar-item>
@@ -24,5 +25,6 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style scoped lang="less">
+
 </style>

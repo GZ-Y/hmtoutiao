@@ -24,7 +24,8 @@ import {
   Dialog,
   Search,
   List,
-  PullRefresh 
+  PullRefresh,
+  Icon 
 } from 'vant';
 
 Vue.use(Button)
@@ -48,6 +49,8 @@ Vue.use(Button)
 .use(Search)
 .use(List)
 .use(PullRefresh)
+.use(Icon)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
 Vue.prototype.$dialog = Dialog 
+

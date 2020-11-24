@@ -2,7 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { Popup } from 'vant';
 
+Vue.use(Popup);
 import './plugins/vant'
 import 'amfe-flexible'
 import './styles/icon.css'
