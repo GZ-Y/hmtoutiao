@@ -3,6 +3,7 @@ import
   {request}
  from './request'
 
+ //全部频道
 export const getAllChannelsData = () => {
   return request({
     method: "GET",
@@ -10,6 +11,15 @@ export const getAllChannelsData = () => {
   })
 }
 
+//当前用户频道
+export const getUserChannelsData = () => {
+  return request({
+    method: "GET",
+    url: `/app/v1_0/user/channels`,
+  })
+}
+
+//频道新闻推荐，就是上拉加载更多
 export const getChannelsArticlesData = params => {
   return request({
     method: "GET",

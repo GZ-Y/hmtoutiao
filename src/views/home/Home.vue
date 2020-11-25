@@ -1,39 +1,27 @@
 <template>
   <div class="home">
     <van-search placeholder="请输入搜索关键词" />
-    <van-tabs sticky>
+    <van-tabs>
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
-        <!-- <div slot="title" @click="onClickId(item.id)">{{item.name}}</div> -->
         <home-content :channel="channels"></home-content>
       </van-tab>
     </van-tabs>
+
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" />
     </div>
-    <van-popup v-model="isShow" position="top" 
-    :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
-      <div class="popup_my">
-        <span>我的频道</span>
-        <van-button round type="info">编辑</van-button>
-        <van-grid :gutter="10">
-          <van-grid-item v-for="channels in channelsList" :key='channels.id' icon="photo-o" text="文字">
-            {{channels.name}}
-          </van-grid-item>
-        </van-grid>
-      </div>
-      <div class="popup_recommend">
-        <span>频道推荐</span>
-      </div>
+    <van-popup get-container="body" v-model="isShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
+      <edit-content :user-channel="channelsList"></edit-content>
     </van-popup>
-    <!-- <div class="footer_block">123</div> -->
-
   </div>
 </template>
 
 <script>
-import { getAllChannelsData } from "../../utils/home.js";
+import { getUserChannelsData } from "../../utils/home.js";
 import HomeContent from "./components/HomeContent";
 import EditContent from "./components/EditContent";
+import { mapState } from "vuex";
+
 // import { raw } from 'express';
 // import { log } from 'util';
 export default {
@@ -41,7 +29,7 @@ export default {
   data() {
     return {
       channelsList: [],
-      isShow: true
+      isShow: false
     };
   },
   components: {
@@ -49,15 +37,27 @@ export default {
     EditContent
   },
   created() {
-    this.getAllChannels();
+    this.getUserChannels();
   },
-
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
+    getContainer() {
+      return document.querySelector("body");
+    },
     onShow() {
       this.isShow = true;
     },
-    async getAllChannels() {
-      const { data } = await getAllChannelsData();
+    async getUserChannels() {
+      //已经登录情况下，刷新页面会退出？？？
+      // if (this.user) {
+      //   const { data } = await getUserChannelsData();
+      //   const { channels } = data.data;
+      //   this.channelsList = channels;
+      // }
+      //用户未登录情况
+      const { data } = await getUserChannelsData();
       const { channels } = data.data;
       this.channelsList = channels;
     }
@@ -67,7 +67,6 @@ export default {
 <style scoped lang="less">
 @color_b: #439ffa;
 .home {
-  position: relative;
   .van-search {
     background-color: @color_b;
     ::v-deep .van-search__content {
@@ -103,13 +102,6 @@ export default {
   }
 
   ::v-deep .van-popup {
-    width: 375px;
-    padding: 55px 15px 0 15px;
-    .popup_my {
-      ::v-deep .van-button {
-        margin-left: 185px;
-      }
-    }
   }
   ::v-deep .van-grid-item__content {
     width: 80px;

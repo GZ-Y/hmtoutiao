@@ -24,6 +24,7 @@
 
 <script>
 import { getChannelsArticlesData } from "../../../utils/home.js";
+import { log } from "util";
 // import { log } from "util";
 export default {
   name: "HomeContent",
@@ -31,11 +32,6 @@ export default {
     return {
       list: [],
       timestamp: null,
-      params: {
-        channel_id: this.channel.id,
-        timestamp: this.timestamp || Date.now(),
-        with_top: 1
-      },
       loading: false,
       finished: false,
       isLoading: false,
@@ -49,45 +45,62 @@ export default {
     }
   },
   methods: {
-    onRefresh() {
-      this.onLoad();
+    //下拉刷新
+    async onRefresh() {
+      const {data} = await getChannelsArticlesData({
+        channel_id: this.channel.id,
+        timestamp: Date.now(),
+        with_top: 1
+      });
+      console.log(data);
+      const {results:res} = data.data
+      this.list.unshift(...res);
       this.isLoading = false;
     },
+    //上拉加载更多
     async onLoad() {
-      const { data } = await getChannelsArticlesData(this.params);
-      // console.log(data);
+      const { data } = await getChannelsArticlesData({
+        channel_id: this.channel.id,
+        timestamp: this.timestamp || Date.now(),
+        with_top: 1
+      });
       const { results: res, pre_timestamp: time } = data.data;
-      console.log(time);
       this.list.push(...res);
 
       this.loading = false;
-
-      this.timestamp = Date.now() - 10000;
-      // console.log(Date.now());
-      // console.log(this.timestamp);
+      this.timestamp = time
+      if (res.length === 0) {
+        this.finished = true
+      }
     }
   }
 };
 </script>
 <style scoped lang="less">
-::v-deep .van-list {
-  
-    .slot_label {
-      .slot_label_wrap {
-        display: flex;
-        div:not(:last-child) {
-          margin-right: 10px;
-        }
-        div {
-          flex: 1;
+.home-content{
+  position: fixed;
+  top: 100px;
+  bottom: 50px;
+  overflow-y: auto;
+  right: 0;
+  left: 0;
+  ::v-deep .van-list {
+  .slot_label {
+    .slot_label_wrap {
+      display: flex;
+      div:not(:last-child) {
+        margin-right: 10px;
+      }
+      div {
+        flex: 1;
 
-          img {
-            width: 100%;
-            height: 100px;
-          }
+        img {
+          width: 100%;
+          height: 100px;
         }
       }
-    .slot_block{
+    }
+    .slot_block {
       height: calc(107px - 42px);
       background-color: white;
     }
@@ -99,4 +112,6 @@ export default {
     }
   }
 }
+}
+
 </style>

@@ -64,9 +64,9 @@ export default {
     };
   },
   created() {
-    this.getCaptchaData("13911111111").then(res=>{
-      console.log(res);
-    })
+    // this.getCaptchaData("13911111111").then(res=>{
+    //   console.log(res);
+    // })
   },
   mounted(){
 
