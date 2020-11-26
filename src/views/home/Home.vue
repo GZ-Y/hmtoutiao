@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <van-search placeholder="请输入搜索关键词" />
-    <van-tabs>
+    <van-tabs v-model="active">
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
         <home-content :channel="channels"></home-content>
       </van-tab>
@@ -10,8 +10,8 @@
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" />
     </div>
-    <van-popup get-container="body" v-model="isShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
-      <edit-content :user-channel="channelsList"></edit-content>
+    <van-popup get-container="body" v-model="isDialogShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
+      <edit-content :user-channel="channelsList" @closeDialog="closeDialog"></edit-content>
     </van-popup>
   </div>
 </template>
@@ -28,8 +28,9 @@ export default {
   name: "Home",
   data() {
     return {
+      active:0,
       channelsList: [],
-      isShow: false
+      isDialogShow: false
     };
   },
   components: {
@@ -37,26 +38,28 @@ export default {
     EditContent
   },
   created() {
-    this.getUserChannels();
+    if (this.user) {
+      this.getUserChannels();
+    }
+      this.getUserChannels();
   },
   computed: {
     ...mapState(["user"])
   },
+  
   methods: {
+    closeDialog(index){
+      this.isDialogShow = false;
+      this.active = index;
+    },
     getContainer() {
       return document.querySelector("body");
     },
     onShow() {
-      this.isShow = true;
+      this.isDialogShow = true;
     },
+    //请求获取我的频道数据列表
     async getUserChannels() {
-      //已经登录情况下，刷新页面会退出？？？
-      // if (this.user) {
-      //   const { data } = await getUserChannelsData();
-      //   const { channels } = data.data;
-      //   this.channelsList = channels;
-      // }
-      //用户未登录情况
       const { data } = await getUserChannelsData();
       const { channels } = data.data;
       this.channelsList = channels;

@@ -4,22 +4,28 @@
       <div class="popup_my popup_channels">
         <div class="popup_my_header popup_header">
           <span class="header_text my_header_text">我的频道</span>
-          <van-button @click="editClick" round type="info">{{editText}}</van-button>
+          <van-button :class="{btnColor:isEditDelete}" v-if="!isEditAdd" @click="editDeleteClick" round type="info">
+            {{editDeleteText}}</van-button>
         </div>
         <van-grid :gutter="10">
           <van-grid-item v-for="(myChannel,index) in userChannel" :key="index">
-            <van-icon @click="deleteChannel(index)" v-show="isEditBtn" :name="index !== 0 ? 'clear':null" /> {{myChannel.name}}
+            <div @click="closeDialog(index)" :class="['grid-item_text',
+            {disable:isEditDelete || isEditAdd},
+            index === isActive? 'select ':null]">{{myChannel.name}}
+            </div>
+            <van-icon class="van-icon_delete" @click="deleteChannel(index)" v-show="isEditDelete" :name="index !== 0 ? 'clear':null" />
           </van-grid-item>
         </van-grid>
       </div>
       <div class="popup_recommend popup_channels">
         <div class="popup_recommend_header popup_header">
           <span class="header_text recommend_header_text">推荐频道</span>
-          <van-button round type="info">编辑</van-button>
+          <van-button :class="{btnColor:isEditAdd}" v-if="!isEditDelete" @click="editAddClick" round type="info">
+            {{editAddText}}</van-button>
         </div>
         <van-grid :gutter="10">
-          <van-grid-item v-for="recommendChannel in recommend" :key="recommendChannel.id" icon="photo-o" text="文字">
-            {{recommendChannel.name}}
+          <van-grid-item v-for="(recommendChannel,index) in recommend" :key="index" icon="photo-o" text="文字">
+            <van-icon @click="addChannel(recommendChannel)" class="van-icon_add" v-show="isEditAdd" name="add-o" /> {{recommendChannel.name}}
           </van-grid-item>
         </van-grid>
       </div>
@@ -29,14 +35,18 @@
 
 <script>
 import { getAllChannelsData } from "../../../utils/home.js";
+import { log } from "util";
 
 export default {
   name: "EditContent",
   data() {
     return {
       allChannel: [],
-      isEditBtn: false,
-      editText: "编辑"
+      isEditDelete: false,
+      isEditAdd: false,
+      isActive: 0,
+      editDeleteText: "编辑",
+      editAddText: "编辑"
     };
   },
   props: {
@@ -63,22 +73,40 @@ export default {
     }
   },
   methods: {
+    closeDialog(index) {
+     
+      this.isActive = index;
+      this.$emit("closeDialog", index);
+    },
     // 显示删除频道图标
-    editClick() {
-      this.isEditBtn = !this.isEditBtn;
-      // this.editText = "完成";
-      if (this.isEditBtn) {
-        this.editText = "完成";
+    editDeleteClick() {
+      this.isEditDelete = !this.isEditDelete;
+      if (this.isEditDelete) {
+        this.editDeleteText = "完成";
       } else {
-        this.editText = "编辑";
+        this.editDeleteText = "编辑";
+      }
+    },
+    //显示添加频道图标
+    editAddClick() {
+      this.isEditAdd = !this.isEditAdd;
+      if (this.isEditAdd) {
+        this.editAddText = "完成";
+      } else {
+        this.editAddText = "编辑";
       }
     },
     //删除频道
     deleteChannel(index) {
-      if (index === 0) {
-        return false;
+      if (index < this.isActive) {
+        this.isActive = this.isActive - 1;
+        console.log(index,this.isActive);
       }
+
       this.userChannel.splice(index, 1);
+    },
+    addChannel(item) {
+      this.userChannel.push(item);
     },
     async getAllChannels() {
       const { data } = await getAllChannelsData();
@@ -89,7 +117,24 @@ export default {
 };
 </script>
 <style scoped lang="less">
+@color: #1989fa;
 .edit {
+  .select {
+    // border: 1px solid @color;
+    color: @color;
+  }
+  .grid-item_text {
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .disable {
+    pointer-events: none;
+  }
+  .btnColor {
+    border: 1px solid red;
+    color: red !important ;
+  }
   .popup_wrap {
     padding: 55px 15px 0 15px;
     // position: relative;
@@ -110,7 +155,7 @@ export default {
           height: 10;
           padding: 0 5px;
           background-color: white;
-          color: #1989fa;
+          color: @color;
         }
       }
     }
@@ -120,12 +165,27 @@ export default {
       padding-right: 0;
       font-size: 13px;
     }
+
     ::v-deep .van-icon {
       position: absolute;
-      top: -6px;
-      right: -6px;
-      z-index: 2;
-      color: red;
+    }
+    .popup_my {
+      .van-icon_delete {
+        top: -6px;
+        right: -6px;
+        z-index: 2;
+        color: red;
+      }
+    }
+    .popup_recommend {
+      ::v-deep .van-grid-item__content {
+        .van-icon_add {
+          top: -6px;
+          left: 0;
+          z-index: 2;
+          color: @color;
+        }
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ export const getAllChannelsData = () => {
   })
 }
 
-//当前用户频道
+//当前用户频道（未登录和已登录是一个接口）
 export const getUserChannelsData = () => {
   return request({
     method: "GET",

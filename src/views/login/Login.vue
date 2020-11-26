@@ -64,9 +64,7 @@ export default {
     };
   },
   created() {
-    // this.getCaptchaData("13911111111").then(res=>{
-    //   console.log(res);
-    // })
+    
   },
   mounted(){
 
@@ -118,12 +116,11 @@ export default {
       });
       try {
         const {data} = await getLoginData(this.user);
-        let {token} = data.data;
         this.$toast({
           type: "success",
           message: "登陆成功"
         });
-        window.localStorage.setItem('user',JSON.stringify(token));
+        window.localStorage.setItem('user',JSON.stringify(data.data));
         this.$store.commit('increment');
         this.$router.push('/my');
       } catch (err) {
