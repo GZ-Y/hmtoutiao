@@ -11,7 +11,7 @@
           <van-grid-item v-for="(myChannel,index) in userChannel" :key="index">
             <div @click="closeDialog(index)" :class="['grid-item_text',
             {disable:isEditDelete || isEditAdd},
-            index === isActive? 'select ':null]">{{myChannel.name}}
+            index === isActive? 'select':null]">{{myChannel.name}}
             </div>
             <van-icon class="van-icon_delete" @click="deleteChannel(index)" v-show="isEditDelete" :name="index !== 0 ? 'clear':null" />
           </van-grid-item>
@@ -53,11 +53,17 @@ export default {
     userChannel: {
       type: Array,
       required: true
+    },
+    active: {
+      type: Number,
+      required: true
     }
   },
   created() {
     this.getAllChannels();
+    this.isActive = this.active;
   },
+  
   computed: {
     recommend() {
       //这样的数组去重不可以去除掉多余的对象。
@@ -74,7 +80,6 @@ export default {
   },
   methods: {
     closeDialog(index) {
-     
       this.isActive = index;
       this.$emit("closeDialog", index);
     },
@@ -100,7 +105,6 @@ export default {
     deleteChannel(index) {
       if (index < this.isActive) {
         this.isActive = this.isActive - 1;
-        console.log(index,this.isActive);
       }
 
       this.userChannel.splice(index, 1);

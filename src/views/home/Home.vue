@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <van-search placeholder="请输入搜索关键词" />
+    <van-search placeholder="请输入搜索关键词" @focus="onFocus"/>
     <van-tabs v-model="active">
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
         <home-content :channel="channels"></home-content>
@@ -11,7 +11,7 @@
       <van-icon @click="onShow" name="wap-nav" />
     </div>
     <van-popup get-container="body" v-model="isDialogShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
-      <edit-content :user-channel="channelsList" @closeDialog="closeDialog"></edit-content>
+      <edit-content :user-channel="channelsList" :active="active" @closeDialog="closeDialog"></edit-content>
     </van-popup>
   </div>
 </template>
@@ -48,6 +48,9 @@ export default {
   },
   
   methods: {
+    onFocus(){
+      this.$router.push('/search')
+    },
     closeDialog(index){
       this.isDialogShow = false;
       this.active = index;

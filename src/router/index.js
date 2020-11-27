@@ -27,6 +27,11 @@ const routes = [{
     name: 'Qa',
     component: () => import('@/views/qa/Qa')
   },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/search/Search')
+  },
 ]
 
 const router = new VueRouter({
