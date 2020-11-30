@@ -1,12 +1,11 @@
 <template>
   <div class="home">
-    <van-search placeholder="请输入搜索关键词" @focus="onFocus"/>
+    <van-search placeholder="请输入搜索关键词" @focus="onFocus" />
     <van-tabs v-model="active">
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
         <home-content :channel="channels"></home-content>
       </van-tab>
     </van-tabs>
-
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" />
     </div>
@@ -28,7 +27,7 @@ export default {
   name: "Home",
   data() {
     return {
-      active:0,
+      active: 0,
       channelsList: [],
       isDialogShow: false
     };
@@ -41,17 +40,17 @@ export default {
     if (this.user) {
       this.getUserChannels();
     }
-      this.getUserChannels();
+    this.getUserChannels();
   },
   computed: {
     ...mapState(["user"])
   },
-  
+
   methods: {
-    onFocus(){
-      this.$router.push('/search')
+    onFocus() {
+      this.$router.push("/search");
     },
-    closeDialog(index){
+    closeDialog(index) {
       this.isDialogShow = false;
       this.active = index;
     },
@@ -84,10 +83,14 @@ export default {
     }
   }
   .van-tabs {
+    ::v-deep .van-tabs__nav {
+      margin-right: 31px;
+    }
     ::v-deep .van-tabs__line {
       background-color: @color_b;
     }
   }
+
   .footer_block {
     height: 50px;
     background: #439ffa;
@@ -99,16 +102,14 @@ export default {
     width: 20px;
     height: 20px;
     position: fixed;
-    top: 62px;
+    top: 63px;
     right: 0px;
-    padding-right: 5px;
+    padding-right: 7px;
     z-index: 2;
     background-color: white;
     opacity: 0.8;
   }
 
-  ::v-deep .van-popup {
-  }
   ::v-deep .van-grid-item__content {
     width: 80px;
     height: 20px;

@@ -2,8 +2,7 @@
 <!-- 搜索结果 -->
   <div class="search-result">
     <van-cell-group>
-      <van-cell title="搜索结果1" />
-      <van-cell title="搜索结果1" />
+      <van-cell v-for="(result,index) in resultList" :key="index" :title="result.title"/>
     </van-cell-group>
   </div>
 </template>
@@ -16,6 +15,12 @@
 
       }
     },
+    props:{
+      resultList:{
+        type:Array,
+        required:true
+      }
+    }
   }
 </script>
 <style scoped>
