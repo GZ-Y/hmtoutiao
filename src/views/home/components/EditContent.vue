@@ -5,7 +5,7 @@
         <div class="popup_my_header popup_header">
           <span class="header_text my_header_text">我的频道</span>
           <van-button :class="{btnColor:isEditDelete}" v-if="!isEditAdd" @click="editDeleteClick" round type="info">
-            {{editDeleteText}}</van-button>
+            {{isEditDelete?'完成':'编辑'}}</van-button>
         </div>
         <van-grid :gutter="10">
           <van-grid-item v-for="(myChannel,index) in userChannel" :key="index">
@@ -21,7 +21,7 @@
         <div class="popup_recommend_header popup_header">
           <span class="header_text recommend_header_text">推荐频道</span>
           <van-button :class="{btnColor:isEditAdd}" v-if="!isEditDelete" @click="editAddClick" round type="info">
-            {{editAddText}}</van-button>
+            {{isEditAdd?'完成':'编辑'}}</van-button>
         </div>
         <van-grid :gutter="10">
           <van-grid-item v-for="(recommendChannel,index) in recommend" :key="index" icon="photo-o" text="文字">
@@ -86,20 +86,10 @@ export default {
     // 显示删除频道图标
     editDeleteClick() {
       this.isEditDelete = !this.isEditDelete;
-      if (this.isEditDelete) {
-        this.editDeleteText = "完成";
-      } else {
-        this.editDeleteText = "编辑";
-      }
     },
     //显示添加频道图标
     editAddClick() {
       this.isEditAdd = !this.isEditAdd;
-      if (this.isEditAdd) {
-        this.editAddText = "完成";
-      } else {
-        this.editAddText = "编辑";
-      }
     },
     //删除频道
     deleteChannel(index) {

@@ -2,7 +2,9 @@
   <!-- 相关搜索 -->
   <div class="search-related">
     <van-cell-group>
-      <van-cell v-for="(Lenovo,index) in optionsList" :key="index" :title="Lenovo" />
+      <van-cell v-for="(Lenovo,index) in optionsList" :key="index" >
+        <div slot="title" v-html="relatedText(Lenovo)" @click="$emit('onRelated',Lenovo)"></div>
+      </van-cell>
     </van-cell-group>
   </div>
 </template>
@@ -15,7 +17,7 @@ export default {
   name: "SearchRelated",
   data() {
     return {
-      optionsList: []
+      optionsList: [],
     };
   },
   props: {
@@ -24,28 +26,26 @@ export default {
       required: true
     }
   },
-
+  
   watch: {
     related: {
       handler: debounce(async function() {
         console.log(this.related);
-        if (this.related !== "") {
+        if (this.related.length !== 0 && this.related.trim()) {
           const { data } = await getSearchRelatedData(this.related);
           let { options } = data.data;
           this.optionsList = options;
         }
       }, 500),
       immediate: true
-      // async handler(){
-      //   console.log(this.related);
-      //   const {data} = await getSearchRelatedData(this.related);
-      //   console.log(data);
-      // }
-    }
+    },
+    
   },
   methods: {
-    // getSearchRelated(){
-    // }
+    relatedText(value){
+      return value.replace(new RegExp(this.related,'ig'),
+      `<span style='color:#439ffa'>${this.related}</span>`);
+    }
   }
 };
 </script>
