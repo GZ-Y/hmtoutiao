@@ -4,12 +4,14 @@ import router from './router'
 import store from './store'
 import { Popup } from 'vant';
 
+Vue.prototype.$bus = new Vue()
 Vue.use(Popup);
 import './plugins/vant'
 import 'amfe-flexible'
 import './styles/icon.css'
 import './styles/index.less'
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
+
 new Vue({
   router,
   store,

@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-const routes = [{
+const routes = [
+  {
     path: '/',
     redirect: '/home'
   },
@@ -31,6 +32,12 @@ const routes = [{
     path: '/search',
     name: 'Search',
     component: () => import('@/views/search/Search')
+  },
+  {
+    path: '/articles/:article_id',
+    name: 'Articles',
+    component: () => import('@/views/articles/Articles'),
+    props:true,
   },
 ]
 

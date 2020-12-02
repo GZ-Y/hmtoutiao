@@ -3,9 +3,10 @@
     <van-search placeholder="请输入搜索关键词" @focus="onFocus" />
     <van-tabs v-model="active">
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
-        <home-content :channel="channels"></home-content>
+        <home-content :channel="channels" @scroll.native="backTop"></home-content>
       </van-tab>
     </van-tabs>
+    <back-top class="back_top"/>
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" />
     </div>
@@ -17,9 +18,12 @@
 
 <script>
 import { getUserChannelsData } from "../../utils/home.js";
+import { mapState } from "vuex";
 import HomeContent from "./components/HomeContent";
 import EditContent from "./components/EditContent";
-import { mapState } from "vuex";
+
+import BackTop from "../../components/BackTop";
+// import { log } from 'util';
 
 // import { raw } from 'express';
 // import { log } from 'util';
@@ -29,12 +33,14 @@ export default {
     return {
       active: 0,
       channelsList: [],
-      isDialogShow: false
+      isDialogShow: false,
+      isBackTop: false
     };
   },
   components: {
     HomeContent,
-    EditContent
+    EditContent,
+    BackTop
   },
   created() {
     if (this.user) {
@@ -42,11 +48,15 @@ export default {
     }
     this.getUserChannels();
   },
+  
   computed: {
     ...mapState(["user"])
   },
-
   methods: {
+    
+    backTop() {
+      console.log(document.querySelectorAll(".home-content")[0].offsetTop);
+    },
     onFocus() {
       this.$router.push("/search");
     },
@@ -98,12 +108,19 @@ export default {
     bottom: 0;
     z-index: 1;
   }
+  .back_top {
+    position: fixed;
+    top: 80%;
+    right: 45px;
+  }
   .edit {
+    position: fixed;
+    top: 62px;
+    right: 0px;
+
     width: 20px;
     height: 20px;
-    position: fixed;
-    top: 63px;
-    right: 0px;
+    
     padding-right: 7px;
     z-index: 2;
     background-color: white;

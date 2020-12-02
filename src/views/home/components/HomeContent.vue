@@ -2,7 +2,7 @@
   <div class="home-content">
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh" :success-duration="3000">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <van-cell v-for="item in list" :key="item.aut_id">
+        <van-cell v-for="item in list" :key="item.aut_id" :to="{path:'/articles/'+item.art_id}">
           <div slot="title">{{item.title}}</div>
           <div class="slot_label" slot="label">
             <div class="slot_label_wrap" v-if="item.cover.images.length === 3">
@@ -24,8 +24,6 @@
 
 <script>
 import { getChannelsArticlesData } from "../../../utils/home.js";
-import { log } from "util";
-// import { log } from "util";
 export default {
   name: "HomeContent",
   data() {
@@ -47,13 +45,13 @@ export default {
   methods: {
     //下拉刷新
     async onRefresh() {
-      const {data} = await getChannelsArticlesData({
+      const { data } = await getChannelsArticlesData({
         channel_id: this.channel.id,
         timestamp: Date.now(),
         with_top: 1
       });
       console.log(data);
-      const {results:res} = data.data
+      const { results: res } = data.data;
       this.list.unshift(...res);
       this.isLoading = false;
     },
@@ -68,16 +66,16 @@ export default {
       this.list.push(...res);
 
       this.loading = false;
-      this.timestamp = time
+      this.timestamp = time;
       if (res.length === 0) {
-        this.finished = true
+        this.finished = true;
       }
     }
   }
 };
 </script>
 <style scoped lang="less">
-.home-content{
+.home-content {
   position: fixed;
   top: 100px;
   bottom: 50px;
@@ -85,33 +83,32 @@ export default {
   right: 0;
   left: 0;
   ::v-deep .van-list {
-  .slot_label {
-    .slot_label_wrap {
-      display: flex;
-      div:not(:last-child) {
-        margin-right: 10px;
-      }
-      div {
-        flex: 1;
+    .slot_label {
+      .slot_label_wrap {
+        display: flex;
+        div:not(:last-child) {
+          margin-right: 10px;
+        }
+        div {
+          flex: 1;
 
-        img {
-          width: 100%;
-          height: 100px;
+          img {
+            width: 100%;
+            height: 100px;
+          }
         }
       }
+      .slot_block {
+        height: calc(107px - 42px);
+        background-color: white;
+      }
     }
-    .slot_block {
-      height: calc(107px - 42px);
-      background-color: white;
-    }
-  }
-  .slot-extra {
-    img {
-      width: 150px;
-      height: 100px;
+    .slot-extra {
+      img {
+        width: 150px;
+        height: 100px;
+      }
     }
   }
 }
-}
-
 </style>
