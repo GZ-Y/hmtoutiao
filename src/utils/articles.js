@@ -6,6 +6,6 @@ import
 export const getArticlesDetailData = articleId => {
   return request({
     method: "GET",
-    url: ` /app/v1_0/articles/${articleId}`,
+    url: `/app/v1_0/articles/${articleId}`,
   })
 }

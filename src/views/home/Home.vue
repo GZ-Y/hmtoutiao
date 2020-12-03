@@ -3,10 +3,10 @@
     <van-search placeholder="请输入搜索关键词" @focus="onFocus" />
     <van-tabs v-model="active">
       <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
-        <home-content :channel="channels" @scroll.native="backTop"></home-content>
+        <home-content :channel="channels"></home-content>
       </van-tab>
     </van-tabs>
-    <back-top class="back_top"/>
+    <back-top class="back_top" />
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" />
     </div>
@@ -23,6 +23,7 @@ import HomeContent from "./components/HomeContent";
 import EditContent from "./components/EditContent";
 
 import BackTop from "../../components/BackTop";
+import { setTimeout } from "timers";
 // import { log } from 'util';
 
 // import { raw } from 'express';
@@ -48,15 +49,12 @@ export default {
     }
     this.getUserChannels();
   },
-  
+
   computed: {
     ...mapState(["user"])
   },
   methods: {
     
-    backTop() {
-      console.log(document.querySelectorAll(".home-content")[0].offsetTop);
-    },
     onFocus() {
       this.$router.push("/search");
     },
@@ -120,7 +118,7 @@ export default {
 
     width: 20px;
     height: 20px;
-    
+
     padding-right: 7px;
     z-index: 2;
     background-color: white;

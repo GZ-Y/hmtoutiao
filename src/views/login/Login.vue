@@ -22,8 +22,8 @@ export default {
   data() {
     return {
       user: {
-        mobile: "13911111111",
-        code: "246810"
+        mobile: "1575080",
+        code: ""
       },
       time: 60 * 1000,
       isTime: false,

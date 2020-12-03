@@ -1,11 +1,10 @@
 <template>
   <div class="wrap">
     <div class="header" v-if="user">
-      <div class="h_content">
-        <van-image width="70" height="70" round :src="require('../../assets/image/tgb.jpg')" />
-        <span class="left_text">淘股吧</span>
-        <van-button type="default">编辑资料</van-button>
-      </div>
+      <personal>
+        <div slot="title_text_top">淘股吧</div>
+        <div slot="slot_button">编辑资料</div>
+      </personal>
       <van-grid class="grid_personal">
         <van-grid-item class="one-grid-item">
           <span>0</span>
@@ -43,10 +42,14 @@
 
 <script>
 import { mapState } from "vuex";
+import Personal from "../../components/Personal";
 export default {
   name: "My",
   data() {
     return {};
+  },
+  components: {
+    Personal
   },
   created() {
     // console.log(this.user);
@@ -89,28 +92,10 @@ export default {
 .wrap {
   .header {
     background-color: @color_b;
-    .h_content {
-      position: relative;
-      box-sizing: border-box;
-      padding: 15px;
+    .personal {
       ::v-deep .van-image {
-        vertical-align: middle;
-      }
-      .left_text {
-        font-size: 20px;
-        color: white;
-        margin-left: 20px;
-      }
-      ::v-deep .van-button {
-        width: 60px;
-        height: 17px;
-        font-size: 5px;
-        border-radius: 30px;
-        padding: 0;
-        position: absolute;
-        top: 50%;
-        right: 15px;
-        transform: translateY(-50%);
+        width: 70px;
+        height: 70px;
       }
     }
     ::v-deep .van-grid {
