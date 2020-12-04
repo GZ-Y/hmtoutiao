@@ -15,6 +15,7 @@
 
 <script>
 import { getCaptchaData, getLoginData } from "../../utils/login.js";
+import { log } from 'util';
 // import { log } from 'util';
 
 export default {
@@ -116,12 +117,13 @@ export default {
       });
       try {
         const {data} = await getLoginData(this.user);
+        // let {token} = data.data;
         this.$toast({
           type: "success",
           message: "登陆成功"
         });
-        window.localStorage.setItem('user',JSON.stringify(data.data));
-        this.$store.commit('increment');
+        // window.localStorage.setItem('user',JSON.stringify(data.data));
+        this.$store.commit('increment',data.data);
         this.$router.push('/my');
       } catch (err) {
         if (err.request.status === 400) {

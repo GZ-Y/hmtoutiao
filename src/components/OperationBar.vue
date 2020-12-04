@@ -32,30 +32,42 @@ export default {
 </script>
 <style scoped lang='less'>
 .operation-bar_wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   height: 43px;
-  // background-color: blue;
+  background-color: white;
+  border-top: 1px solid #eee;
   display: flex;
   div:nth-child(1) {
     flex: 4;
-    border-right: 1px solid #999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    .operation_left_Comment{
-      width: 80px;
+    .operation_left_Comment {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60%;
       height: 20px;
-      box-sizing: border-box;
-      padding-top:20px;
-      border:1px solid #999;
-      font-size: 15px
+      margin: 0 auto;
+      padding: 0 10px;
+      border: 1px solid #999;
+      font-size: 15px;
+      text-align: center;
     }
   }
   div:nth-child(2) {
     flex: 6;
     display: flex;
-    div{
+    div {
       flex: 1;
-      border-right: 1px solid #999;
+      /deep/ .van-icon {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      /deep/ .van-icon-other-pay {
+        height: 24px;
+      }
     }
   }
 }

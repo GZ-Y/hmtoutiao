@@ -9,6 +9,7 @@ Vue.use(Popup);
 import './plugins/vant'
 import 'amfe-flexible'
 import './styles/icon.css'
+import './styles/markdown-body.css'
 import './styles/index.less'
 Vue.config.productionTip = false;
 

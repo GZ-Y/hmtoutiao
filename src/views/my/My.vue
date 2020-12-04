@@ -42,6 +42,7 @@
 
 <script>
 import { mapState } from "vuex";
+import {removeItem} from '../../utils/storage.js'
 import Personal from "../../components/Personal";
 export default {
   name: "My",
@@ -76,7 +77,7 @@ export default {
         })
         .then(() => {
           // on confirm
-          this.$store.commit("eliminate");
+          this.$store.commit("eliminate",null);
         })
         .catch(() => {
           // on cancel

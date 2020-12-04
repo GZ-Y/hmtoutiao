@@ -1,18 +1,22 @@
+// import { get } from 'core-js/fn/dict'
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {setItem,getItem, removeItem} from '../utils/storage'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user:null
+    user:getItem('user')
   },
   mutations: {
-    increment (state) {
-      state.user = JSON.parse(window.localStorage.getItem('user'))
+    increment (state,data) {
+      state.user = data;
+      setItem('user',state.user)
     },
-    eliminate(state){
-      state.user = null
+    eliminate(state,data){
+      state.user = data;
+      removeItem('user')
     }
   },
   actions: {
