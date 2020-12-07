@@ -2,7 +2,7 @@
   <div class="home">
     <van-search placeholder="请输入搜索关键词" @focus="onFocus" />
     <van-tabs v-model="active">
-      <van-tab v-for="channels in channelsList" :key='channels.id' :title="channels.name">
+      <van-tab v-for="channels in channels" :key='channels.id' :title="channels.name">
         <home-content :channel="channels"></home-content>
       </van-tab>
     </van-tabs>
@@ -11,29 +11,29 @@
       <van-icon @click="onShow" name="wap-nav" />
     </div>
     <van-popup get-container="body" v-model="isDialogShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
-      <edit-content :user-channel="channelsList" :active="active" @closeDialog="closeDialog"></edit-content>
+      <edit-content :user-channel="channels" :active="active" @closeDialog="closeDialog"></edit-content>
     </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannelsData } from "../../utils/home.js";
+import { getItem, setItem } from "../../utils/storage.js";
+
 import { mapState } from "vuex";
+
 import HomeContent from "./components/HomeContent";
 import EditContent from "./components/EditContent";
-
 import BackTop from "../../components/BackTop";
-import { setTimeout } from "timers";
-// import { log } from 'util';
-
-// import { raw } from 'express';
-// import { log } from 'util';
+// import { setTimeout } from "timers";
+// Vue.use(ImagePreview)
+import ImagePreview from 'vue'
 export default {
   name: "Home",
   data() {
     return {
       active: 0,
-      channelsList: [],
+      channels: [],
       isDialogShow: false,
       isBackTop: false
     };
@@ -54,7 +54,6 @@ export default {
     ...mapState(["user"])
   },
   methods: {
-    
     onFocus() {
       this.$router.push("/search");
     },
@@ -72,7 +71,8 @@ export default {
     async getUserChannels() {
       const { data } = await getUserChannelsData();
       const { channels } = data.data;
-      this.channelsList = channels;
+      this.channels = channels;
+      console.log(channels);
     }
   }
 };

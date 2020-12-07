@@ -13,7 +13,7 @@
             {disable:isEditDelete || isEditAdd},
             index === isActive? 'select':null]">{{myChannel.name}}
             </div>
-            <van-icon class="van-icon_delete" @click="deleteChannel(index)" v-show="isEditDelete" :name="index !== 0 ? 'clear':null" />
+            <van-icon class="van-icon_delete" @click="deleteChannel(myChannel,index)" v-show="isEditDelete" :name="index !== 0 ? 'clear':null" />
           </van-grid-item>
         </van-grid>
       </div>
@@ -34,8 +34,13 @@
 </template>
 
 <script>
-import { getAllChannelsData } from "../../../utils/home.js";
-import { log } from "util";
+import {
+  getAllChannelsData,
+  setUserChannelsData,
+  modifyUserChannelsData
+} from "../../../utils/home.js";
+import { getItem, setItem } from "../../../utils/storage.js";
+import { mapState } from "vuex";
 
 export default {
   name: "EditContent",
@@ -63,7 +68,7 @@ export default {
     this.getAllChannels();
     this.isActive = this.active;
   },
-  
+
   computed: {
     recommend() {
       //这样的数组去重不可以去除掉多余的对象。
@@ -76,7 +81,8 @@ export default {
           return all.id === user.id;
         });
       });
-    }
+    },
+    ...mapState(["user"])
   },
   methods: {
     closeDialog(index) {
@@ -92,16 +98,37 @@ export default {
       this.isEditAdd = !this.isEditAdd;
     },
     //删除频道
-    deleteChannel(index) {
+    deleteChannel(myChannel, index) {
       if (index < this.isActive) {
         this.isActive = this.isActive - 1;
       }
 
       this.userChannel.splice(index, 1);
+      console.log(myChannel);
     },
-    addChannel(item) {
-      this.userChannel.push(item);
+    //添加频道
+    async addChannel(recommendChannel) {
+      this.userChannel.push(recommendChannel);
+      if (this.user) {
+        try {
+          // const {data} = await modifyUserChannelsData({
+          //   id: recommendChannel.id,
+          //   seq: this.userChannel.length
+          // });
+           await modifyUserChannelsData({
+            id: recommendChannel.id, // 频道ID
+            seq: this.userChannel.length // 序号
+          })
+          // console.log(data);
+        } catch (err) {
+          this.$toast.error('失败');
+          console.log('失败');
+        }
+      }
+
+      // console.log(channels);
     },
+    //请求获取全部频道数据
     async getAllChannels() {
       const { data } = await getAllChannelsData();
       const { channels } = data.data;

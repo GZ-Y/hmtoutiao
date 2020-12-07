@@ -26,7 +26,6 @@ import {
   List,
   PullRefresh,
   Icon,
-  ImagePreview 
 } from 'vant';
 
 Vue.use(Button)
@@ -51,7 +50,6 @@ Vue.use(Button)
 .use(List)
 .use(PullRefresh)
 .use(Icon)
-.use(ImagePreview)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
 Vue.prototype.$dialog = Dialog 
