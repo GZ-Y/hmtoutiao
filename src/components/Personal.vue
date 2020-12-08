@@ -10,7 +10,7 @@
           <slot name='title_text_bottom'></slot>
         </div>
       </div>
-      <van-button type="default">
+      <van-button type="default" @click="onFollow">
         <div slot="default">
           <slot name="slot_button"></slot>
         </div>
@@ -20,10 +20,31 @@
 </template>
 
 <script>
+// import { log } from 'util';
+
 export default {
   name: "Personal",
   data() {
     return {};
+  },
+  props:{
+    // autId:{
+    //   type:Object,
+    //   default(){
+    //     return {}
+    //   }
+    // },
+    autId:{
+      type:Number,
+    }
+  },
+  mounted(){
+    console.log(this.autId);
+  },
+  methods:{
+    onFollow(){
+      this.$emit('onFollow')
+    }
   }
 };
 </script>

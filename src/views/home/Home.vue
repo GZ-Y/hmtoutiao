@@ -8,7 +8,7 @@
     </van-tabs>
     <back-top class="back_top" />
     <div class="edit">
-      <van-icon @click="onShow" name="wap-nav" />
+      <van-icon @click="onShow" name="wap-nav" size="0.6rem" />
     </div>
     <van-popup get-container="body" v-model="isDialogShow" position="top" :style="{ width:'100%',height: '100%' }" closeable close-icon-position="top-left">
       <edit-content :user-channel="channels" :active="active" @closeDialog="closeDialog"></edit-content>
@@ -27,7 +27,6 @@ import EditContent from "./components/EditContent";
 import BackTop from "../../components/BackTop";
 // import { setTimeout } from "timers";
 // Vue.use(ImagePreview)
-import ImagePreview from 'vue'
 export default {
   name: "Home",
   data() {
@@ -110,19 +109,27 @@ export default {
     position: fixed;
     top: 80%;
     right: 45px;
+    // top: 0;
+    // right: 0;
   }
   .edit {
     position: fixed;
-    top: 62px;
-    right: 0px;
+    // top: 62px;
+    // right: 0px;
+    top: 65px;
+    right: 0;
 
-    width: 20px;
-    height: 20px;
+    // width: 20px;
+    // height: 20px;
 
     padding-right: 7px;
+
     z-index: 2;
     background-color: white;
     opacity: 0.8;
+    /deep/ .van-icon::before {
+      padding-top: 0.5px;
+    }
   }
 
   ::v-deep .van-grid-item__content {
