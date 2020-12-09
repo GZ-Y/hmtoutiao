@@ -3,7 +3,9 @@
     <div class="header" v-if="user">
       <personal>
         <div slot="title_text_top">淘股吧</div>
-        <div slot="slot_button">编辑资料</div>
+        <div slot="slot_button">
+          <van-button text="编辑资料"></van-button>
+        </div>
       </personal>
       <van-grid class="grid_personal">
         <van-grid-item class="one-grid-item">
@@ -98,6 +100,18 @@ export default {
         width: 70px;
         height: 70px;
       }
+      ::v-deep .van-button {
+      width: 55px;
+      height: 20px;
+      color: black;
+      font-size: 8px;
+      border-radius: 30px;
+      padding: 0;
+      position: absolute;
+      top: 50%;
+      right: 15px;
+      transform: translateY(-50%);
+    }
     }
     ::v-deep .van-grid {
       span {

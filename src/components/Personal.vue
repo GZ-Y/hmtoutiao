@@ -10,11 +10,12 @@
           <slot name='title_text_bottom'></slot>
         </div>
       </div>
-      <van-button type="default" @click="onFollow">
-        <div slot="default">
-          <slot name="slot_button"></slot>
-        </div>
-      </van-button>
+      <div class="personal_right_btn" @click="onFollow">
+        <slot name="slot_button" ></slot>
+      </div>
+      <div>
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -27,20 +28,13 @@ export default {
   data() {
     return {};
   },
-  props:{
-    // autId:{
-    //   type:Object,
-    //   default(){
-    //     return {}
-    //   }
-    // },
-    autId:{
-      type:Number,
-    }
-  },
-  mounted(){
-    console.log(this.autId);
-  },
+  // props:{
+  //   autId:{
+  //     type:Number,
+  //     default:1
+  //   }
+  // },
+  
   methods:{
     onFollow(){
       this.$emit('onFollow')
@@ -64,17 +58,7 @@ export default {
       justify-content: center;
       margin-left: 10px;
     }
-    ::v-deep .van-button {
-      width: 60px;
-      height: 17px;
-      font-size: 5px;
-      border-radius: 30px;
-      padding: 0;
-      position: absolute;
-      top: 50%;
-      right: 15px;
-      transform: translateY(-50%);
-    }
+    
   }
 }
 </style>
