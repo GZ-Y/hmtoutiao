@@ -26,6 +26,7 @@ import {
   List,
   PullRefresh,
   Icon,
+  ActionSheet 
 } from 'vant';
 
 Vue.use(Button)
@@ -50,6 +51,7 @@ Vue.use(Button)
 .use(List)
 .use(PullRefresh)
 .use(Icon)
+.use(ActionSheet)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
 Vue.prototype.$dialog = Dialog 

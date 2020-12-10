@@ -13,7 +13,7 @@
       <div class="personal_right_btn" @click="onFollow">
         <slot name="slot_button" ></slot>
       </div>
-      <div>
+      <div class="slot_anonymous">
         <slot></slot>
       </div>
     </div>

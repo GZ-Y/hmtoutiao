@@ -2,7 +2,7 @@
   <div class="operation-bar">
     <div class="operation-bar_wrap">
       <div class="operation_left">
-        <div class="operation_left_Comment">写评论</div>
+        <div class="operation_left_Comment" @click="writeComment">写评论</div>
       </div>
       <div class="operation_right">
         <div class="like">
@@ -27,6 +27,11 @@ export default {
   name: "OperationBar",
   data() {
     return {};
+  },
+  methods:{
+    writeComment(){
+      this.$emit('writeComment')
+    }
   }
 };
 </script>

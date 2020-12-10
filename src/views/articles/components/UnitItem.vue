@@ -9,7 +9,7 @@
         </div>
         <div class="reply">
           <span>12.09</span>
-          <van-button text="回复"></van-button>
+          <van-button size='mini' text="回复" round></van-button>
         </div>
       </personal>
     </van-cell>
@@ -31,23 +31,34 @@ export default {
 </script>
 <style scoped lang='less'>
 .unit-item {
-  .personal {
-    /deep/ .van-image {
-      width: 45px;
-      height: 45px;
-    }
-    /deep/ .van-icon{
-      position: absolute;
-      top: 30px;
-      right: 15px;
-      transform: translateY(-100%);
-    }
-    .reply {
-      // flex:unset;
-      position: absolute;
-      bottom:0;
-      left: 70px;
-      transform: translateY(50%);
+  .van-cell {
+    height: 115px;
+    border-bottom:1px solid #999;
+    // overflow: auto;
+    .personal {
+      /deep/ .van-image {
+        width: 45px;
+        height: 45px;
+      }
+      /deep/ .van-icon {
+        position: absolute;
+        top: 30px;
+        right: 0px;
+        transform: translateY(-100%);
+      }
+      .reply {
+        position: absolute;
+        bottom: 0;
+        left: 55px;
+        transform: translateY(50%);
+        .van-button {
+          width: 67px;
+          height: 25px;
+          line-height: 25px;
+          margin-left: 12px;
+          background-color: #F4F5F6;
+        }
+      }
     }
   }
 }
