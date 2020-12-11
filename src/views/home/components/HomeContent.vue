@@ -91,7 +91,6 @@ export default {
         }
         div {
           flex: 1;
-
           img {
             width: 100%;
             height: 100px;

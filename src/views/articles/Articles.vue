@@ -12,12 +12,15 @@
     <div class="scroll">
       <div class="articles_content markdown-body" v-html="articleObj.content" ref="articlesImageRef">
       </div>
-      <van-list v-model="Loading" :finished="finished" finished-text="我也是有底线的哦！" @load="onLoad">
-        <unit-item></unit-item>
-      </van-list>
+      <div class="reply_list">
+        <van-list v-model="loading" :finished="finished" finished-text="我也是有底线的哦！" @load="onLoad">
+          <unit-item :unit-list="unitList" :fabulous-show="isFabulous" @onFabulous="onFabulous" @onCommentPopup='onCommentPopup'></unit-item>
+        </van-list>
+      </div>
     </div>
     <operation-bar @writeComment='writeComment'></operation-bar>
-    <comment-popup :comment-show.sync="isActionSheetShow" @onClose="onClose($event)"></comment-popup>
+    <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease"></add-comments>
+    <comment-popup :comment-show="isCommentsPopupShow" @onCommentPopupSheet='onCommentPopupSheet'></comment-popup>
   </div>
 </template>
 
@@ -25,11 +28,17 @@
 import { getArticlesDetailData } from "../../utils/articles.js";
 import { followUserData, cancelFollowUserData } from "../../utils/user.js";
 import { getArticlesCommentData } from "../../utils/comment.js";
+import {
+  addReplyFabulous,
+  deleteReplyFabulous,
+  addReply
+} from "../../utils/reply.js";
 
 import Personal from "../../components/Personal";
 import OperationBar from "../../components/OperationBar";
 
 import UnitItem from "./components/UnitItem";
+import AddComments from "./components/AddComments";
 import CommentPopup from "./components/CommentPopup";
 
 import { ImagePreview } from "vant";
@@ -40,10 +49,12 @@ export default {
   data() {
     return {
       articleObj: {},
-      Loading: false,
+      unitList: [],
+      loading: false,
       finished: false,
-      isActionSheetShow: false,
-      list: []
+      isAddCommentShow:false,
+      isCommentsPopupShow:false,
+      isFabulous: false
     };
   },
   props: {},
@@ -51,6 +62,7 @@ export default {
     Personal,
     OperationBar,
     UnitItem,
+    AddComments,
     CommentPopup
   },
   created() {
@@ -58,35 +70,72 @@ export default {
   },
 
   methods: {
+    onCommentPopup(){
+      this.isCommentsPopupShow = !this.isCommentsPopupShow
+    },
+    onCommentPopupSheet(show){
+      this.isCommentsPopupShow = show
+    },
+    //对文章进行评论
+    async onRelease(mes) {
+      const { data } = await addReply({
+        target: this.articleObj.art_id,
+        content: mes
+      });
+      const { new_obj } = data.data;
+      // this.unitList = [];
+      this.unitList.unshift(new_obj);
+      console.log(this.unitList);
+      this.isAddCommentShow = false;
+    },
+    //评论点赞接口
+    async onFabulous(item) {
+      console.log(item);
+      this.isFabulous = !this.isFabulous;
+      if (!this.isFabulous) {
+        await addReplyFabulous(item.aut_id);
+      } else {
+        await deleteReplyFabulous(item.aut_id);
+      }
+    },
     //子组件面板显示与隐藏
     writeComment() {
-      this.isActionSheetShow = !this.isActionSheetShow;
-      console.log(this.isActionSheetShow);
+      this.isAddCommentShow = !this.isAddCommentShow;
     },
     //子组件传递过来的布尔值
     onClose(show) {
-      this.isActionSheetShow = show;
+      this.isAddCommentShow = show;
     },
+    //文章内容
     async getArticlesDetail() {
       const { data } = await getArticlesDetailData(
         this.$route.params.article_id
       );
+      console.log(data);
       this.articleObj = data.data;
-      console.log(this.articleObj);
       this.ImagePreviewShow();
     },
     //加载评论
     onLoad() {
       setTimeout(async () => {
-        console.log(this.articleObj.art_id);
-        const {data} = await getArticlesCommentData({
-          type: "a" || "c",
-          source: this.articleObj.art_id
-        });
-        const {total_count} = data.data
-        console.log(total_count);
-        if(total_count === 0){
-          this.finished = true
+        try {
+          const { data } = await getArticlesCommentData({
+            type: "a" || "c",
+            source: this.articleObj.art_id
+          });
+          this.unitList.push(...data.data.results);
+          console.log(this.unitList.length);
+          const { total_count } = data.data;
+          if (this.unitList.length < total_count) {
+            this.loading = false;
+          } else {
+            console.log("停止加载");
+            this.finished = true;
+          }
+        } catch (err) {
+          console.log(err.request.status);
+          console.log("停止加载");
+          this.finished = true;
         }
       }, 300);
     },
@@ -100,7 +149,6 @@ export default {
         await followUserData(this.articleObj.aut_id);
       }
     },
-
     //预览图片
     ImagePreviewShow() {
       this.$nextTick(() => {
@@ -162,8 +210,14 @@ export default {
         padding-right: 0;
       }
     }
+    .reply_list {
+      position: relative;
+      /deep/ .van-list__finished-text {
+        background-color: #ebeced;
+      }
+    }
   }
-  /deep/ .comment-popup {
+  /deep/ .add_comments {
     /deep/ .van-field__control {
       width: 80%;
       border-bottom: 1px solid #999;
