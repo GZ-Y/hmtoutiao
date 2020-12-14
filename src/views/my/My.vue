@@ -2,9 +2,12 @@
   <div class="wrap">
     <div class="header" v-if="user">
       <personal>
+        <div slot="images">
+          <van-image  round :src="require('@/assets/image/tgb.jpg')" />
+        </div>
         <div slot="title_text_top">淘股吧</div>
         <div slot="slot_button">
-          <van-button text="编辑资料"></van-button>
+          <van-button text="编辑资料" @click="editInfo"/>
         </div>
       </personal>
       <van-grid class="grid_personal">
@@ -55,12 +58,14 @@ export default {
     Personal
   },
   created() {
-    // console.log(this.user);
   },
   computed: {
     ...mapState(["user"])
   },
   methods: {
+    editInfo(){
+      this.$router.push('/info')
+    },
     jumpLogin() {
       this.$toast.loading({
         message: "正在跳转...",

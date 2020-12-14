@@ -15,7 +15,8 @@ const routes = [
       {
         path: '/home',
         name: 'Home',
-        component: () => import('@/views/home/Home')
+        component: () => import('@/views/home/Home'),
+        keepAlive: true
       },
       {
         path: '/qa',
@@ -45,6 +46,11 @@ const routes = [
     name: 'Articles',
     component: () => import('@/views/articles/Articles'),
     props:true,
+  },
+  {
+    path: '/info',
+    name: 'Info',
+    component: () => import('@/views/info/Info')
   },
 ]
 

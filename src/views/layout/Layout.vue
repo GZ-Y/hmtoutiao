@@ -17,6 +17,7 @@
         active:"/home"
       }
     },
+    
   }
 </script>
 <style scoped>

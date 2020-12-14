@@ -1,11 +1,11 @@
 <template>
   <div class="login">
     <van-nav-bar title="登录" left-arrow @click-left="onNextLevel" />
-    <van-form @submit='onLogin' validate-trigger="onSubmit"  ref="formRef">
+    <van-form @submit='onLogin' validate-trigger="onSubmit" ref="formRef">
       <van-field v-model="user.mobile" class="hmtoutiao hmtoutiao-shouji" placeholder="请输入手机号" name="mobile" :rules="formRules.mobile" show-error="false" show-error-message="false" type='number' />
       <van-field v-model="user.code" class="hmtoutiao hmtoutiao-yanzhengma" placeholder="请输入验证码" name="code" :rules="formRules.code" type='number' />
       <van-button :disabled="disabled" ref="vanBtn" @click="getCaptcha" class='btn_verCode' type="primary" native-type="button">
-        <span v-if="isTime !== true">获取验证码</span>
+        <span v-if="!isTime">获取验证码</span>
         <van-count-down @finish="changeSpan" v-else :time="time" format="ss s" />
       </van-button>
       <van-button class="btn_login" type="info" block>登录</van-button>
@@ -15,7 +15,7 @@
 
 <script>
 import { getCaptchaData, getLoginData } from "../../utils/login.js";
-import { log } from 'util';
+import { log } from "util";
 // import { log } from 'util';
 
 export default {
@@ -64,16 +64,12 @@ export default {
       }
     };
   },
-  created() {
-    
-  },
-  mounted(){
-
-  },
+  created() {},
+  mounted() {},
   methods: {
     //左侧箭头点击事件
-    onNextLevel(){
-      this.$router.go(-1)
+    onNextLevel() {
+      this.$router.go(-1);
     },
     //倒计时完成时触发事件
     changeSpan() {
@@ -116,15 +112,13 @@ export default {
         forbidClick: true
       });
       try {
-        const {data} = await getLoginData(this.user);
-        // let {token} = data.data;
+        const { data } = await getLoginData(this.user);
         this.$toast({
           type: "success",
           message: "登陆成功"
         });
-        // window.localStorage.setItem('user',JSON.stringify(data.data));
-        this.$store.commit('increment',data.data);
-        this.$router.push('/my');
+        this.$store.commit("increment", data.data);
+        this.$router.push("/my");
       } catch (err) {
         if (err.request.status === 400) {
           this.$toast({

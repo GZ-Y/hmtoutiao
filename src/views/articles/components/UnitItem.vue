@@ -1,8 +1,13 @@
 <template>
   <div class="unit-item">
-    <div class="all_reply">全部评论</div>
+    <div class="all_comment">
+      <slot name="all_comment"></slot>
+    </div>
     <van-cell v-for="(res,index) in unitList" :key="index">
       <personal>
+        <div slot="images">
+          <van-image round contain :src="res.aut_proto"/>
+        </div>
         <div slot="title_text_top">{{res.aut_name}}</div>
         <div slot="title_text_bottom">{{res.content}}</div>
         <div class="personal_btn" slot="slot_button">
@@ -10,15 +15,18 @@
         </div>
         <div class="reply">
           <span>{{res.pubdate}}</span>
-          <van-button size='mini' round @click="onCommentPopup">回复{{res.reply_count}}</van-button>
+          <van-button size='mini' round @click="onCommentPopup(index)">回复{{res.reply_count}}</van-button>
         </div>
       </personal>
     </van-cell>
+    <div class="all_reply">
+      <slot name="all_reply"></slot>
+    </div>
   </div>
 </template>
 
 <script>
-import Personal from "../../../components/Personal";
+import Personal from "@/components/Personal";
 
 export default {
   name: "unitItem",
@@ -41,8 +49,8 @@ export default {
     Personal
   },
   methods: {
-    onCommentPopup(){
-      this.$emit('onCommentPopup')
+    onCommentPopup(index){
+      this.$emit('onCommentPopup',index)
     },
     onFabulous(item) {
       this.$emit("onFabulous", item);
@@ -52,16 +60,9 @@ export default {
 </script>
 <style scoped lang='less'>
 .unit-item {
-  .all_reply{
-    font-size: 15px;
-    padding: 10px 0;
-    border-top:1px solid #E2E3E4;
-    border-bottom:1px solid #E2E3E4;
-  }
   .van-cell {
     height: 115px;
     border-bottom: 1px solid #999;
-    // overflow: auto;
     .personal {
       /deep/ .van-image {
         width: 45px;

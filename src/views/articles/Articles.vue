@@ -1,7 +1,10 @@
 <template>
   <div class="articles">
-    <van-nav-bar left-arrow @click-left="$router.go(-1)" title="文章详情" />
+    <van-nav-bar left-arrow @click-left="$router.back()" title="文章详情" />
     <personal @onFollow="onFollow">
+      <div slot="images">
+        <van-image round :src="articleObj.aut_photo" />
+      </div>
       <div slot="title_text_top">{{articleObj.aut_name}}</div>
       <div slot="title_text_bottom">{{articleObj.pubdate}}</div>
       <div class="personal_btn" slot="slot_button">
@@ -14,46 +17,51 @@
       </div>
       <div class="reply_list">
         <van-list v-model="loading" :finished="finished" finished-text="我也是有底线的哦！" @load="onLoad">
-          <unit-item :unit-list="unitList" :fabulous-show="isFabulous" @onFabulous="onFabulous" @onCommentPopup='onCommentPopup'></unit-item>
+          <unit-item :unit-list="unitList" :fabulous-show="isFabulous" @onFabulous="onFabulous" @onCommentPopup='onCommentPopup'>
+            <div class="all_comment" slot="all_comment">全部评论</div>
+          </unit-item>
         </van-list>
       </div>
     </div>
     <operation-bar @writeComment='writeComment'></operation-bar>
     <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease"></add-comments>
-    <comment-popup :comment-show="isCommentsPopupShow" @onCommentPopupSheet='onCommentPopupSheet'></comment-popup>
+    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" @onCommentPopupSheet='onCommentPopupSheet'></comment-popup>
   </div>
 </template>
 
 <script>
-import { getArticlesDetailData } from "../../utils/articles.js";
-import { followUserData, cancelFollowUserData } from "../../utils/user.js";
-import { getArticlesCommentData } from "../../utils/comment.js";
+import { getArticlesDetailData } from "@/utils/articles.js";
+import { followUserData, cancelFollowUserData } from "@/utils/user.js";
+import { getArticlesCommentData } from "@/utils/comment.js";
 import {
   addReplyFabulous,
   deleteReplyFabulous,
   addReply
-} from "../../utils/reply.js";
+} from "@/utils/reply.js";
 
-import Personal from "../../components/Personal";
-import OperationBar from "../../components/OperationBar";
+import Personal from "@/components/Personal";
+import OperationBar from "./components/OperationBar";
 
 import UnitItem from "./components/UnitItem";
 import AddComments from "./components/AddComments";
 import CommentPopup from "./components/CommentPopup";
 
+import { mapState } from "vuex";
+
 import { ImagePreview } from "vant";
-import { log } from "util";
-import { setTimeout, setInterval } from "timers";
+// import { log } from "util";
+// import { setTimeout, setInterval } from "timers";
 export default {
   name: "Articles",
   data() {
     return {
       articleObj: {},
       unitList: [],
+      currentItem: {},
       loading: false,
       finished: false,
-      isAddCommentShow:false,
-      isCommentsPopupShow:false,
+      isAddCommentShow: false,
+      isCommentsPopupShow: false,
       isFabulous: false
     };
   },
@@ -65,25 +73,29 @@ export default {
     AddComments,
     CommentPopup
   },
+
   created() {
     this.getArticlesDetail();
   },
-
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
-    onCommentPopup(){
-      this.isCommentsPopupShow = !this.isCommentsPopupShow
+    onCommentPopup(index) {
+      this.isCommentsPopupShow = !this.isCommentsPopupShow;
+      this.currentItem = this.unitList[index];
     },
-    onCommentPopupSheet(show){
-      this.isCommentsPopupShow = show
+    onCommentPopupSheet(show) {
+      this.isCommentsPopupShow = show;
     },
     //对文章进行评论
     async onRelease(mes) {
+      console.log('评论添加成功');
       const { data } = await addReply({
         target: this.articleObj.art_id,
         content: mes
       });
       const { new_obj } = data.data;
-      // this.unitList = [];
       this.unitList.unshift(new_obj);
       console.log(this.unitList);
       this.isAddCommentShow = false;
@@ -100,7 +112,18 @@ export default {
     },
     //子组件面板显示与隐藏
     writeComment() {
-      this.isAddCommentShow = !this.isAddCommentShow;
+      if (this.user) {
+        this.isAddCommentShow = !this.isAddCommentShow;
+      } else {
+        this.$toast.loading({
+          message: "请先登录再进行评论",
+          forbidClick: true,
+          duration: 1500,
+          onClose: () => {
+            this.$router.push("/my");
+          }
+        });
+      }
     },
     //子组件传递过来的布尔值
     onClose(show) {
@@ -124,7 +147,6 @@ export default {
             source: this.articleObj.art_id
           });
           this.unitList.push(...data.data.results);
-          console.log(this.unitList.length);
           const { total_count } = data.data;
           if (this.unitList.length < total_count) {
             this.loading = false;
@@ -214,6 +236,12 @@ export default {
       position: relative;
       /deep/ .van-list__finished-text {
         background-color: #ebeced;
+      }
+      .all_comment {
+        font-size: 15px;
+        padding: 10px 0;
+        border-top: 1px solid #e2e3e4;
+        border-bottom: 1px solid #e2e3e4;
       }
     }
   }

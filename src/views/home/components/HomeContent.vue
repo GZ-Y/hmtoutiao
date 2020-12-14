@@ -11,7 +11,11 @@
               <div><img :src="item.cover.images[2]" alt=""></div>
             </div>
             <div class="slot_block" v-if="item.cover.images.length === 1"></div>
-            <div class="slot_label_name">{{item.aut_name}}</div>
+            <div class="bottom_info">
+              <span>作者:{{item.aut_name}}</span>
+              <span>评论{{item.comm_count}}条</span>
+              <span>时间:{{item.pubdate}}</span>
+            </div>
           </div>
           <div class="slot-extra" v-if="item.cover.images.length === 1" slot="extra">
             <img :src="item.cover.images[0]" alt="">
@@ -42,6 +46,9 @@ export default {
       required: true
     }
   },
+  // updated(){
+  //   console.log(this.list);
+  // },
   methods: {
     //下拉刷新
     async onRefresh() {
@@ -100,6 +107,11 @@ export default {
       .slot_block {
         height: calc(107px - 42px);
         background-color: white;
+      };
+      .bottom_info{
+        span:not(:last-child){
+          margin-right: 10px;
+        }
       }
     }
     .slot-extra {

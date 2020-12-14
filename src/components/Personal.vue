@@ -1,7 +1,9 @@
 <template>
   <div class="personal">
     <div class="h_content">
-      <van-image  round :src="require('../assets/image/tgb.jpg')" />
+      <div class="images">
+        <slot name="images"></slot>
+      </div>
       <div class="title_text">
         <div class="title_text_top">
           <slot name='title_text_top'></slot>
@@ -21,20 +23,12 @@
 </template>
 
 <script>
-// import { log } from 'util';
 
 export default {
   name: "Personal",
   data() {
     return {};
   },
-  // props:{
-  //   autId:{
-  //     type:Number,
-  //     default:1
-  //   }
-  // },
-  
   methods:{
     onFollow(){
       this.$emit('onFollow')
@@ -58,7 +52,6 @@ export default {
       justify-content: center;
       margin-left: 10px;
     }
-    
   }
 }
 </style>
