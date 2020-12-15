@@ -71,7 +71,6 @@ export default {
       const { data } = await getUserChannelsData();
       const { channels } = data.data;
       this.channels = channels;
-      console.log(channels);
     }
   }
 };

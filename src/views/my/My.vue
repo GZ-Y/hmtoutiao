@@ -3,28 +3,29 @@
     <div class="header" v-if="user">
       <personal>
         <div slot="images">
-          <van-image  round :src="require('@/assets/image/tgb.jpg')" />
+          <van-image round :src="perInfo.photo" />
         </div>
-        <div slot="title_text_top">淘股吧</div>
+        <div slot="title_text_top">{{perInfo.name}}</div>
+        <div slot="title_text_bottom">{{perInfo.intro}}</div>
         <div slot="slot_button">
-          <van-button text="编辑资料" @click="editInfo"/>
+          <van-button text="编辑资料" @click="editInfo" />
         </div>
       </personal>
       <van-grid class="grid_personal">
         <van-grid-item class="one-grid-item">
-          <span>0</span>
+          <span>{{perInfo.art_count}}</span>
           <span>头条</span>
         </van-grid-item>
         <van-grid-item class="two-grid-item">
-          <span>1</span>
+          <span>{{perInfo.follow_count}}</span>
           <span>关注</span>
         </van-grid-item>
         <van-grid-item class="three-grid-item">
-          <span>2</span>
+          <span>{{perInfo.fans_count}}</span>
           <span>粉丝</span>
         </van-grid-item>
         <van-grid-item class="four-grid-item">
-          <span>3</span>
+          <span>{{perInfo.like_count}}</span>
           <span>获赞</span>
         </van-grid-item>
       </van-grid>
@@ -47,24 +48,33 @@
 
 <script>
 import { mapState } from "vuex";
-import {removeItem} from '../../utils/storage.js'
-import Personal from "../../components/Personal";
+import { removeItem } from "@/utils/storage.js";
+import { getUserInfoData } from "@/utils/user.js";
+
+import Personal from "@/components/Personal";
 export default {
   name: "My",
   data() {
-    return {};
+    return {
+      perInfo:{}
+    };
   },
   components: {
     Personal
   },
   created() {
+    this.getUserInfo()
   },
   computed: {
     ...mapState(["user"])
   },
   methods: {
-    editInfo(){
-      this.$router.push('/info')
+    async getUserInfo(){
+      const {data} = await getUserInfoData();
+      this.perInfo = data.data
+    },
+    editInfo() {
+      this.$router.push("/info");
     },
     jumpLogin() {
       this.$toast.loading({
@@ -84,7 +94,7 @@ export default {
         })
         .then(() => {
           // on confirm
-          this.$store.commit("eliminate",null);
+          this.$store.commit("eliminate", null);
         })
         .catch(() => {
           // on cancel
@@ -106,17 +116,17 @@ export default {
         height: 70px;
       }
       ::v-deep .van-button {
-      width: 55px;
-      height: 20px;
-      color: black;
-      font-size: 8px;
-      border-radius: 30px;
-      padding: 0;
-      position: absolute;
-      top: 50%;
-      right: 15px;
-      transform: translateY(-50%);
-    }
+        width: 55px;
+        height: 20px;
+        color: black;
+        font-size: 8px;
+        border-radius: 30px;
+        padding: 0;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+      }
     }
     ::v-deep .van-grid {
       span {

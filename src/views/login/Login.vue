@@ -112,13 +112,16 @@ export default {
         forbidClick: true
       });
       try {
-        const { data } = await getLoginData(this.user);
+        const  {data}  = await getLoginData(this.user);
+        console.log(data);
         this.$toast({
           type: "success",
           message: "登陆成功"
         });
         this.$store.commit("increment", data.data);
-        this.$router.push("/my");
+        this.$router.push({
+          path:"/my",
+        });
       } catch (err) {
         if (err.request.status === 400) {
           this.$toast({

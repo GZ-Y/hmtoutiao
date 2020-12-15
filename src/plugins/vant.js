@@ -26,7 +26,9 @@ import {
   List,
   PullRefresh,
   Icon,
-  ActionSheet 
+  ActionSheet,
+  Picker,
+  DatetimePicker 
 } from 'vant';
 
 Vue.use(Button)
@@ -52,6 +54,8 @@ Vue.use(Button)
 .use(PullRefresh)
 .use(Icon)
 .use(ActionSheet)
+.use(Picker)
+.use(DatetimePicker)
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify 
 Vue.prototype.$dialog = Dialog 

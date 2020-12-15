@@ -2,6 +2,7 @@ import
   {request}
  from './request'
 
+ //获取短信验证码
 export const getCaptchaData = mobile => {
   return request({
     method: "GET",

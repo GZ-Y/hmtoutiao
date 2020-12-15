@@ -23,9 +23,9 @@
         </van-list>
       </div>
     </div>
-    <operation-bar @writeComment='writeComment'></operation-bar>
-    <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease"></add-comments>
-    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" @onCommentPopupSheet='onCommentPopupSheet'></comment-popup>
+    <operation-bar @writeComment='writeComment' />
+    <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease" />
+    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" @onCommentPopupSheet='onCommentPopupSheet' />
   </div>
 </template>
 
@@ -88,8 +88,9 @@ export default {
     onCommentPopupSheet(show) {
       this.isCommentsPopupShow = show;
     },
-    //对文章进行评论
+    //对文章添加评论 或 是回复评论
     async onRelease(mes) {
+      //这步得加个判断，来判断是添加评论还是回复评论
       console.log('评论添加成功');
       const { data } = await addReply({
         target: this.articleObj.art_id,
