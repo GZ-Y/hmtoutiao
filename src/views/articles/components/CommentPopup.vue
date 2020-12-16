@@ -6,17 +6,21 @@
           <div class="all_reply" slot="all_reply">全部回复</div>
         </unit-item>
       </div>
+
+      <unit-item :unit-list="replyList"></unit-item>
+
       <div class="bottom_button">
         <van-button round @click="onCommentReply">回复评论</van-button>
       </div>
-      <add-comments :comment-show="isCommentReplyShow" @onCloseCommentReply="onCloseCommentReply"/>
+      <add-comments :comment-show="isCommentReplyShow" @onCloseCommentReply="onCloseCommentReply" @onRelease="onRelease" />
     </van-action-sheet>
   </div>
 </template>
 
 <script>
 import UnitItem from "./UnitItem";
-import AddComments from './AddComments'
+import AddComments from "./AddComments";
+import { addReply } from "@/utils/reply.js";
 import { setInterval } from "timers";
 
 export default {
@@ -24,14 +28,19 @@ export default {
   data() {
     return {
       show: false,
-      isCommentReplyShow:false,
-      currentList: []
+      isCommentReplyShow: false,
+      currentList: [],
+      replyList: []
     };
   },
   props: {
     commentShow: {
       type: Boolean,
       default: false
+    },
+    artId: {
+      // type: Number,
+      required: true
     },
     currentItem: {
       type: Object,
@@ -55,11 +64,24 @@ export default {
     }
   },
   methods: {
-    onCloseCommentReply(show){
-      this.isCommentReplyShow = show
+    //回复评论
+    async onRelease(mes) {
+      console.log("回复评论成功");
+      const { data } = await addReply({
+        target: this.currentItem.aut_id,
+        content: mes,
+        art_id: this.artId
+      });
+      console.log(data);
+      const { new_obj } = data.data;
+      this.replyList.unshift(new_obj);
+      this.isCommentReplyShow = false
     },
-    onCommentReply(){
-      this.isCommentReplyShow = !this.isCommentReplyShow
+    onCloseCommentReply(show) {
+      this.isCommentReplyShow = show;
+    },
+    onCommentReply() {
+      this.isCommentReplyShow = !this.isCommentReplyShow;
     },
     onCommentPopupSheet() {
       this.$emit("onCommentPopupSheet", this.show);

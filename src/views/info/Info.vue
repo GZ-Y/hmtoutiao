@@ -8,7 +8,7 @@
       <van-cell title="昵称" :value="perInfo.name" is-link @click="nameShow = true">
       </van-cell>
       <van-cell title="姓别" :value="perInfo.gender===0?'男':'女'" is-link @click="sexShow = true" />
-      <van-cell title="生日" :value="perInfo.birthday" is-link @click="ageShow = true"/>
+      <van-cell title="生日" :value="perInfo.birthday" is-link @click="ageShow = true" />
     </van-cell-group>
 
     <!-- 修改昵称 -->
@@ -24,7 +24,7 @@
 
     <!-- 修改年龄 -->
     <van-popup v-model="ageShow" position="bottom" :style="{ height: '50%' }">
-      <van-datetime-picker v-model="currentDate" type="date" title="选择年月日" :min-date="minDate" :max-date="maxDate" @confirm="onConfirmDate" @cancel="onCancelDate" @change="onChangeDate"/>
+      <van-datetime-picker v-model="currentDate" type="date" title="选择年月日" :min-date="minDate" :max-date="maxDate" @confirm="onConfirmDate" />
     </van-popup>
 
   </div>
@@ -32,6 +32,7 @@
 
 <script>
 import { getPerInfoData, editPerInfoData } from "@/utils/user";
+import dayjs from 'dayjs'
 
 export default {
   name: "Info",
@@ -39,33 +40,41 @@ export default {
     return {
       nameShow: false,
       sexShow: false,
-      ageShow:false,
+      ageShow: false,
       message: "",
       perInfo: {},
       sex: ["男", "女"],
       sexIndex: 0,
-      currentDate:new Date(),
+      currentDate: new Date(),
       minDate: new Date(1971, 0, 0),
-      maxDate: new Date(2020,11,31)
+      maxDate: new Date(2020, 11, 31)
     };
   },
   created() {
     this.getPerInfo();
   },
   methods: {
-    onConfirmDate(val){
-      console.log(val);
-    },
-    onCancelDate(){},
-    onChangeDate(picker,item){
-      
+    // 时间确定
+    async onConfirmDate(val){
+      const ageTime = dayjs(val).format('YYYY-MM-DD');
+      console.log(ageTime);
+      const {data} = await editPerInfoData({
+        birthday:ageTime
+      });
+      console.log(data);
+      this.perInfo.birthday = ageTime
+      this.ageShow = false
     },
     async onConfirm() {
-      this.sexShow = false;
       const { data } = await editPerInfoData({
         gender: this.sexIndex
       });
-      this.getPerInfo();
+      this.sexShow = false;
+      this.perInfo.gender = this.sexIndex;
+      this.$toast.loading({
+        message:'修改性别成功'
+      })
+      this.getPerInfo()
     },
     onCancel() {
       this.sexShow = false;

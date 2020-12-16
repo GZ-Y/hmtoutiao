@@ -17,15 +17,15 @@
       </div>
       <div class="reply_list">
         <van-list v-model="loading" :finished="finished" finished-text="我也是有底线的哦！" @load="onLoad">
-          <unit-item :unit-list="unitList" :fabulous-show="isFabulous" @onFabulous="onFabulous" @onCommentPopup='onCommentPopup'>
+          <unit-item :unit-list="unitList" :attitude="articleObj.attitude" @onFabulous="onFabulous" @onCommentPopup='onCommentPopup'>
             <div class="all_comment" slot="all_comment">全部评论</div>
           </unit-item>
         </van-list>
       </div>
     </div>
     <operation-bar @writeComment='writeComment' />
-    <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease" />
-    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" @onCommentPopupSheet='onCommentPopupSheet' />
+    <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease($event)" />
+    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" :art-id="articleObj.art_id"  @onCommentPopupSheet='onCommentPopupSheet' />
   </div>
 </template>
 
@@ -61,6 +61,7 @@ export default {
       loading: false,
       finished: false,
       isAddCommentShow: false,
+      //回复面板弹出层
       isCommentsPopupShow: false,
       isFabulous: false
     };
@@ -88,28 +89,41 @@ export default {
     onCommentPopupSheet(show) {
       this.isCommentsPopupShow = show;
     },
-    //对文章添加评论 或 是回复评论
+    //对文章添加评论
     async onRelease(mes) {
-      //这步得加个判断，来判断是添加评论还是回复评论
-      console.log('评论添加成功');
-      const { data } = await addReply({
-        target: this.articleObj.art_id,
-        content: mes
-      });
-      const { new_obj } = data.data;
-      this.unitList.unshift(new_obj);
-      console.log(this.unitList);
-      this.isAddCommentShow = false;
+      try {
+        const { data } = await addReply({
+          target: this.articleObj.art_id,
+          content: mes
+        });
+        const { new_obj } = data.data;
+        this.unitList.unshift(new_obj);
+        console.log(this.unitList);
+        this.isAddCommentShow = false;
+        console.log("评论添加成功");
+      } catch (err) {
+        console.log(err);
+        // this.$toast.loading({
+        //   message: "登录过期，请重新登录",
+        //   forbidClick: true,
+        //   duration: 1500,
+        //   onClose: () => {
+        //     this.$router.push("/login");
+        //   }
+        // });
+      }
     },
     //评论点赞接口
     async onFabulous(item) {
       console.log(item);
-      this.isFabulous = !this.isFabulous;
-      if (!this.isFabulous) {
-        await addReplyFabulous(item.aut_id);
-      } else {
-        await deleteReplyFabulous(item.aut_id);
+      if (this.articleObj.attitude === -1) {
+        await addReplyFabulous(item.com_id);
+        this.articleObj.attitude = 1
+      } else if(this.articleObj.attitude === 1) {
+        await deleteReplyFabulous(item.com_id);
+        this.articleObj.attitude = -1
       }
+      
     },
     //子组件面板显示与隐藏
     writeComment() {
@@ -135,7 +149,6 @@ export default {
       const { data } = await getArticlesDetailData(
         this.$route.params.article_id
       );
-      console.log(data);
       this.articleObj = data.data;
       this.ImagePreviewShow();
     },
@@ -156,7 +169,6 @@ export default {
             this.finished = true;
           }
         } catch (err) {
-          console.log(err.request.status);
           console.log("停止加载");
           this.finished = true;
         }
@@ -227,6 +239,7 @@ export default {
 
     /deep/ .van-cell {
       padding-left: 0;
+      padding-right: 0;
       padding-bottom: 0;
       /deep/ .h_content {
         padding-left: 0;
@@ -256,6 +269,7 @@ export default {
       top: 50%;
       right: 5px;
       transform: translateY(-50%);
+      
     }
   }
 }

@@ -11,7 +11,7 @@
         <div slot="title_text_top">{{res.aut_name}}</div>
         <div slot="title_text_bottom">{{res.content}}</div>
         <div class="personal_btn" slot="slot_button">
-          <van-icon :name="fabulousShow?'good-job':'good-job-o'" :color="fabulousShow?'red':''" @click="onFabulous(res)" />
+          <van-icon :name="attitudeSon !== -1?'good-job':'good-job-o'" :badge="res.like_count" :color="attitudeSon !== -1?'red':''" @click="onFabulous(res)" />
         </div>
         <div class="reply">
           <span>{{res.pubdate}}</span>
@@ -31,7 +31,9 @@ import Personal from "@/components/Personal";
 export default {
   name: "unitItem",
   data() {
-    return {};
+    return {
+      attitudeSon:0
+    };
   },
   props: {
     unitList: {
@@ -40,9 +42,15 @@ export default {
         return [];
       }
     },
-    fabulousShow: {
-      type: Boolean,
-      default: false
+    attitude: {
+      // type: [Number,String,Object],
+      required:true,
+    }
+  },
+  watch:{
+    attitude(val){
+      console.log(val);
+      this.attitudeSon = val
     }
   },
   components: {
@@ -73,6 +81,11 @@ export default {
         top: 30px;
         right: 0px;
         transform: translateY(-100%);
+        margin-right: 32.00025px;
+        /deep/ .van-info{
+          top: -7px;
+          right: 7px;
+        }
       }
       .reply {
         position: absolute;

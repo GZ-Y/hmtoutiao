@@ -14,7 +14,7 @@
             <div class="bottom_info">
               <span>作者:{{item.aut_name}}</span>
               <span>评论{{item.comm_count}}条</span>
-              <span>时间:{{item.pubdate}}</span>
+              <span>时间:{{item.pubdate | relativeTime}}</span>
             </div>
           </div>
           <div class="slot-extra" v-if="item.cover.images.length === 1" slot="extra">
@@ -28,6 +28,8 @@
 
 <script>
 import { getChannelsArticlesData } from "../../../utils/home.js";
+import dayjs from 'dayjs'
+
 export default {
   name: "HomeContent",
   data() {
