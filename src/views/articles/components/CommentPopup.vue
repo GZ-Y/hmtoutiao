@@ -68,7 +68,7 @@ export default {
     async onRelease(mes) {
       console.log("回复评论成功");
       const { data } = await addReply({
-        target: this.currentItem.aut_id,
+        target: this.currentItem.com_id,
         content: mes,
         art_id: this.artId
       });

@@ -25,7 +25,7 @@
     </div>
     <operation-bar @writeComment='writeComment' />
     <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease($event)" />
-    <comment-popup :comment-show="isCommentsPopupShow" :current-item="currentItem" :art-id="articleObj.art_id"  @onCommentPopupSheet='onCommentPopupSheet' />
+    <comment-popup v-if="destruction" :comment-show="isCommentsPopupShow" :current-item="currentItem" :art-id="articleObj.art_id" @onCommentPopupSheet='onCommentPopupSheet' />
   </div>
 </template>
 
@@ -63,7 +63,7 @@ export default {
       isAddCommentShow: false,
       //回复面板弹出层
       isCommentsPopupShow: false,
-      isFabulous: false
+      destruction: false
     };
   },
   props: {},
@@ -88,6 +88,7 @@ export default {
     },
     onCommentPopupSheet(show) {
       this.isCommentsPopupShow = show;
+      this.destruction = show
     },
     //对文章添加评论
     async onRelease(mes) {
@@ -97,8 +98,8 @@ export default {
           content: mes
         });
         const { new_obj } = data.data;
+        new_obj.is_like = false;
         this.unitList.unshift(new_obj);
-        console.log(this.unitList);
         this.isAddCommentShow = false;
         console.log("评论添加成功");
       } catch (err) {
@@ -114,16 +115,26 @@ export default {
       }
     },
     //评论点赞接口
-    async onFabulous(item) {
-      console.log(item);
-      if (this.articleObj.attitude === -1) {
-        await addReplyFabulous(item.com_id);
-        this.articleObj.attitude = 1
-      } else if(this.articleObj.attitude === 1) {
-        await deleteReplyFabulous(item.com_id);
-        this.articleObj.attitude = -1
+    async onFabulous(item, index) {
+      if (this.user) {
+        if (!this.unitList[index].is_like) {
+          await addReplyFabulous(item.com_id);
+          this.unitList[index].like_count++;
+        } else {
+          await deleteReplyFabulous(item.com_id);
+          this.unitList[index].like_count--;
+        }
+        this.unitList[index].is_like = !this.unitList[index].is_like;
+      } else {
+        this.$toast.loading({
+          message: "请登录再进行操作",
+          forbidClick: true,
+          duration: 1500,
+          onClose: () => {
+            this.$router.push("/login");
+          }
+        });
       }
-      
     },
     //子组件面板显示与隐藏
     writeComment() {
@@ -150,6 +161,7 @@ export default {
         this.$route.params.article_id
       );
       this.articleObj = data.data;
+      console.log(this.articleObj);
       this.ImagePreviewShow();
     },
     //加载评论
@@ -269,7 +281,6 @@ export default {
       top: 50%;
       right: 5px;
       transform: translateY(-50%);
-      
     }
   }
 }

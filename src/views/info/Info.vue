@@ -7,7 +7,7 @@
       </van-cell>
       <van-cell title="昵称" :value="perInfo.name" is-link @click="nameShow = true">
       </van-cell>
-      <van-cell title="姓别" :value="perInfo.gender===0?'男':'女'" is-link @click="sexShow = true" />
+      <van-cell title="姓别" :value="perInfo.gender===0?'男':'女'" is-link @click="onSexShow" />
       <van-cell title="生日" :value="perInfo.birthday" is-link @click="ageShow = true" />
     </van-cell-group>
 
@@ -19,7 +19,7 @@
 
     <!-- 修改性别 -->
     <van-popup v-model="sexShow" position="bottom" :style="{ height: '50%' }">
-      <van-picker title="姓别" show-toolbar :columns="sex" :default-index="perInfo.gender" @confirm="onConfirm" @cancel="onCancel" @change="onChange" />
+      <van-picker title="姓别" show-toolbar :columns="sex" :default-index="sexIndex" @confirm="onConfirm" @cancel="onCancel" @change="onChange" />
     </van-popup>
 
     <!-- 修改年龄 -->
@@ -32,7 +32,7 @@
 
 <script>
 import { getPerInfoData, editPerInfoData } from "@/utils/user";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 
 export default {
   name: "Info",
@@ -53,32 +53,49 @@ export default {
   created() {
     this.getPerInfo();
   },
+  mounted() {},
+  watch: {
+    sexIndex(val) {
+      console.log(val);
+    }
+  },
   methods: {
+    onSexShow() {
+      this.sexShow = true;
+      this.sexIndex = this.perInfo.gender;
+    },
     // 时间确定
-    async onConfirmDate(val){
-      const ageTime = dayjs(val).format('YYYY-MM-DD');
+    async onConfirmDate(val) {
+      const ageTime = dayjs(val).format("YYYY-MM-DD");
       console.log(ageTime);
-      const {data} = await editPerInfoData({
-        birthday:ageTime
+      const { data } = await editPerInfoData({
+        birthday: ageTime
       });
       console.log(data);
-      this.perInfo.birthday = ageTime
-      this.ageShow = false
+      this.perInfo.birthday = ageTime;
+      this.ageShow = false;
     },
+
     async onConfirm() {
-      const { data } = await editPerInfoData({
+      console.log(this.sexIndex);
+      await editPerInfoData({
         gender: this.sexIndex
       });
+
       this.sexShow = false;
-      this.perInfo.gender = this.sexIndex;
+      // this.perInfo.gender = this.sexIndex;
       this.$toast.loading({
-        message:'修改性别成功'
-      })
-      this.getPerInfo()
+        message: "修改性别成功",
+        onClose: () => {
+          this.getPerInfo();
+        }
+      });
+      // this.getPerInfo()
     },
     onCancel() {
       this.sexShow = false;
     },
+    //性别滚动条发生改变时触发
     onChange(picker, value, index) {
       this.sexIndex = index;
     },
