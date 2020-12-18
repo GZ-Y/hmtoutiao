@@ -25,7 +25,12 @@
     </div>
     <operation-bar @writeComment='writeComment' />
     <add-comments :comment-show="isAddCommentShow" @onClose="onClose($event)" @onRelease="onRelease($event)" />
-    <comment-popup v-if="destruction" :comment-show="isCommentsPopupShow" :current-item="currentItem" :art-id="articleObj.art_id" @onCommentPopupSheet='onCommentPopupSheet' />
+    <comment-popup 
+    :comment-show="isCommentsPopupShow"
+    :current-item="currentItem" 
+    :art-id="articleObj.art_id" 
+    :current-index="currentIndex"
+    @onCommentPopupSheet='onCommentPopupSheet' />
   </div>
 </template>
 
@@ -63,7 +68,9 @@ export default {
       isAddCommentShow: false,
       //回复面板弹出层
       isCommentsPopupShow: false,
-      destruction: false
+      destruction: false,
+      currentIndex:0
+
     };
   },
   props: {},
@@ -82,13 +89,15 @@ export default {
     ...mapState(["user"])
   },
   methods: {
+    //显示评论弹出层面板
     onCommentPopup(index) {
       this.isCommentsPopupShow = !this.isCommentsPopupShow;
       this.currentItem = this.unitList[index];
+      this.currentIndex = index
     },
     onCommentPopupSheet(show) {
       this.isCommentsPopupShow = show;
-      this.destruction = show
+      this.destruction = show;
     },
     //对文章添加评论
     async onRelease(mes) {
@@ -103,15 +112,15 @@ export default {
         this.isAddCommentShow = false;
         console.log("评论添加成功");
       } catch (err) {
-        console.log(err);
-        // this.$toast.loading({
-        //   message: "登录过期，请重新登录",
-        //   forbidClick: true,
-        //   duration: 1500,
-        //   onClose: () => {
-        //     this.$router.push("/login");
-        //   }
-        // });
+        if (err.request.status === 401) {
+          this.$toast.loading({
+            message: "登录已经过期，请重新登录",
+            duration: 1500,
+            onClose: () => {
+              this.$router.push("/login");
+            }
+          });
+        }
       }
     },
     //评论点赞接口
@@ -164,12 +173,12 @@ export default {
       console.log(this.articleObj);
       this.ImagePreviewShow();
     },
-    //加载评论
+    //加载文章评论
     onLoad() {
       setTimeout(async () => {
         try {
           const { data } = await getArticlesCommentData({
-            type: "a" || "c",
+            type: "a",
             source: this.articleObj.art_id
           });
           this.unitList.push(...data.data.results);

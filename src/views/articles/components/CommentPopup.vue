@@ -7,7 +7,7 @@
         </unit-item>
       </div>
 
-      <unit-item :unit-list="replyList"></unit-item>
+      <unit-item :unit-list="replyList[currentIndex]"></unit-item>
 
       <div class="bottom_button">
         <van-button round @click="onCommentReply">回复评论</van-button>
@@ -20,8 +20,10 @@
 <script>
 import UnitItem from "./UnitItem";
 import AddComments from "./AddComments";
-import { addReply } from "@/utils/reply.js";
-import { setInterval } from "timers";
+import { addReply } from "@/utils/reply";
+import { getArticlesCommentData } from "@/utils/comment";
+
+import { setInterval, setTimeout } from "timers";
 
 export default {
   name: "CommentPopup",
@@ -30,7 +32,8 @@ export default {
       show: false,
       isCommentReplyShow: false,
       currentList: [],
-      replyList: []
+      replyList: [],
+      resList: []
     };
   },
   props: {
@@ -47,35 +50,71 @@ export default {
       default() {
         return {};
       }
+    },
+    currentIndex: {
+      type: Number,
+      required: true
     }
   },
   components: {
     UnitItem,
     AddComments
   },
-  created() {},
+  
+
   watch: {
     commentShow(val) {
       this.show = val;
+      // if (this.show) {
+      //   this.getArticlesComment();
+      // }
     },
     currentItem(val) {
       this.currentList = [];
       this.currentList.push(val);
+      this.getArticlesComment();
+    },
+    currentIndex(val) {
+      console.log(val);
     }
   },
   methods: {
-    //回复评论
-    async onRelease(mes) {
-      console.log("回复评论成功");
-      const { data } = await addReply({
-        target: this.currentItem.com_id,
-        content: mes,
-        art_id: this.artId
+    // onOpen() {
+    //   this.getArticlesComment();
+    // },
+    //获取评论的回复
+    async getArticlesComment() {
+      const { data } = await getArticlesCommentData({
+        type: "c",
+        source: this.currentItem.com_id
       });
       console.log(data);
-      const { new_obj } = data.data;
-      this.replyList.unshift(new_obj);
-      this.isCommentReplyShow = false
+      const { results } = data.data;
+      this.resList = results;
+      this.replyList.unshift(this.resList);
+      console.log(this.replyList);
+
+    },
+    onCommentPopup(index) {
+      console.log(index);
+    },
+    //回复评论
+    async onRelease(mes) {
+      try {
+        const { data } = await addReply({
+          target: this.currentItem.com_id,
+          content: mes,
+          art_id: this.artId
+        });
+        console.log(data);
+        const { new_obj } = data.data;
+        this.resList.unshift(new_obj);
+        
+        this.isCommentReplyShow = false;
+        console.log("回复评论成功");
+      } catch (err) {
+        console.log(err);
+      }
     },
     onCloseCommentReply(show) {
       this.isCommentReplyShow = show;
@@ -112,6 +151,7 @@ export default {
     right: 0;
     padding: 5px 0;
     border-top: 1px solid #999;
+    background-color: white;
     .van-button {
       width: 60%;
       height: 30px;

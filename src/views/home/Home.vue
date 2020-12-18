@@ -68,9 +68,21 @@ export default {
     },
     //请求获取我的频道数据列表
     async getUserChannels() {
-      const { data } = await getUserChannelsData();
-      const { channels } = data.data;
-      this.channels = channels;
+      try {
+        const { data } = await getUserChannelsData();
+        const { channels } = data.data;
+        this.channels = channels;
+      } catch (err) {
+        if(err.request.status === 401){
+          this.$toast.loading({
+            message:'登录已经过期，请重新登录',
+            duration:1500,
+            onClose:()=>{
+              this.$router.push('/login')
+            }
+          })
+        }
+      }
     }
   }
 };
