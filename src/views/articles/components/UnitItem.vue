@@ -1,26 +1,20 @@
 <template>
   <div class="unit-item">
-    <div class="all_comment">
-      <slot name="all_comment"></slot>
-    </div>
-    <van-cell v-for="(res,index) in unitList" :key="index">
+    <div class="comment_wrap">
       <personal>
         <div slot="images">
-          <van-image round contain :src="res.aut_proto" />
+          <van-image round contain :src="results.aut_proto" />
         </div>
-        <div slot="title_text_top">{{res.aut_name}}</div>
-        <div slot="title_text_bottom">{{res.content}}</div>
+        <div slot="title_text_top">{{results.aut_name}}</div>
+        <div slot="title_text_bottom">{{results.content}}</div>
         <div class="personal_btn" slot="slot_button">
-          <van-icon :name="res.is_like?'good-job':'good-job-o'" :badge="res.like_count" :color="res.is_like?'red':''" @click="onFabulous(res,index)" />
+          <van-icon :name="results.is_like?'good-job':'good-job-o'" :badge="results.like_count" :color="results.is_like?'red':''" @click="onFabulous(results,index)" />
         </div>
         <div class="reply">
-          <span>{{res.pubdate}}</span>
-          <van-button size='mini' round @click="onCommentPopup(index)">回复{{res.reply_count}}</van-button>
+          <span>{{results.pubdate}}</span>
+          <van-button size='mini' round @click="onCommentPopup(results)">回复{{results.reply_count}}</van-button>
         </div>
       </personal>
-    </van-cell>
-    <div class="all_reply">
-      <slot name="all_reply"></slot>
     </div>
   </div>
 </template>
@@ -37,13 +31,12 @@ export default {
     };
   },
   props: {
-    unitList: {
-      type: Array,
+    results: {
+      type: Object,
       default() {
-        return [];
+        return {};
       }
-    },
-    
+    }
   },
   components: {
     Personal
@@ -52,8 +45,7 @@ export default {
     onCommentPopup(index) {
       this.$emit("onCommentPopup", index);
     },
-    onFabulous(item,index) {
-      // this.unitList[index].is_like = !this.unitList[index].is_like
+    onFabulous(item, index) {
       this.$emit("onFabulous", item, index);
     }
   }
@@ -61,9 +53,8 @@ export default {
 </script>
 <style scoped lang='less'>
 .unit-item {
-  .van-cell {
+  .comment_wrap {
     height: 115px;
-    border-bottom: 1px solid #999;
     .personal {
       /deep/ .van-image {
         width: 45px;
@@ -75,6 +66,7 @@ export default {
         right: 0px;
         transform: translateY(-100%);
         margin-right: 32.00025px;
+        font-size: medium;
         /deep/ .van-info {
           top: -7px;
           right: 7px;
@@ -85,6 +77,9 @@ export default {
         bottom: 0;
         left: 55px;
         transform: translateY(50%);
+        span {
+          font-size: 13px;
+        }
         .van-button {
           width: 67px;
           height: 25px;

@@ -38,8 +38,8 @@ import {
   getAllChannelsData,
   setUserChannelsData,
   modifyUserChannelsData
-} from "../../../utils/home.js";
-import { getItem, setItem } from "../../../utils/storage.js";
+} from "@/utils/home.js";
+import { getItem, setItem } from "@/utils/storage.js";
 import { mapState } from "vuex";
 
 export default {

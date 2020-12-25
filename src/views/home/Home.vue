@@ -1,12 +1,15 @@
 <template>
   <div class="home">
-    <van-search placeholder="请输入搜索关键词" @focus="onFocus" />
+    <van-search placeholder="请输入搜索关键词" @focus="$router.push('/search')" />
     <van-tabs v-model="active">
-      <van-tab v-for="channels in channels" :key='channels.id' :title="channels.name">
-        <home-content :channel="channels"></home-content>
+      <van-tab v-for="(channel,index) in channels" :key='index' :title="channel.name">
+        <home-content :channel="channel" />
       </van-tab>
     </van-tabs>
-    <back-top class="back_top" />
+    <!-- <scroll class="warpper_scroll" :pull-up-load='true' @scroll="onScroll" ref="scroller">
+      <test-scroll :arr-list="arrList" @imageLoad="imageLoad" />
+    </scroll> -->
+    
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" size="0.6rem" />
     </div>
@@ -17,45 +20,75 @@
 </template>
 
 <script>
-import { getUserChannelsData } from "../../utils/home.js";
-import { getItem, setItem } from "../../utils/storage.js";
+import { getUserChannelsData } from "../../utils/home";
+import { getItem, setItem } from "../../utils/storage";
 
 import { mapState } from "vuex";
 
 import HomeContent from "./components/HomeContent";
 import EditContent from "./components/EditContent";
-import BackTop from "../../components/BackTop";
+
+import TestScroll from "./components/TestScroll";
+
+import Scroll from "../../components/Scroll";
 // import { setTimeout } from "timers";
 // Vue.use(ImagePreview)
+import Vue from "vue";
+import vuescroll from "vuescroll/dist/vuescroll-slide";
+import "vuescroll/dist/vuescroll.css";
+import { setTimeout } from "timers";
+Vue.use(vuescroll);
 export default {
   name: "Home",
   data() {
     return {
       active: 0,
+      channel: {},
       channels: [],
       isDialogShow: false,
-      isBackTop: false
+      isBackTop: false,
+      currentIndex: 0,
+     
     };
   },
   components: {
     HomeContent,
     EditContent,
-    BackTop
+    Scroll,
+    vuescroll,
+    TestScroll
   },
   created() {
-    if (this.user) {
-      this.getUserChannels();
-    }
+    // if (this.user) {
+    //   this.getUserChannels();
+    // }
     this.getUserChannels();
   },
 
   computed: {
-    ...mapState(["user"])
+    ...mapState(["user"]),
+    channelItem() {
+      return this.channels[this.currentIndex];
+    }
   },
+
   methods: {
-    onFocus() {
-      this.$router.push("/search");
-    },
+    // imageLoad() {
+    //   console.log("全部加载完成");
+    //   this.$refs.scroller[0].refresh();
+      
+    // },
+    // onPullingUp() {
+    //   console.log("上拉加载更多");
+    // },
+    // onPullingDown() {
+    //   console.log("下拉刷新");
+    // },
+    // onScroll(position) {
+    //   console.log(position.y);
+    // },
+
+   
     closeDialog(index) {
       this.isDialogShow = false;
       this.active = index;
@@ -73,14 +106,14 @@ export default {
         const { channels } = data.data;
         this.channels = channels;
       } catch (err) {
-        if(err.request.status === 401){
+        if (err.request.status === 401) {
           this.$toast.loading({
-            message:'登录已经过期，请重新登录',
-            duration:1500,
-            onClose:()=>{
-              this.$router.push('/login')
+            message: "登录已经过期，请重新登录",
+            duration: 1500,
+            onClose: () => {
+              this.$router.push("/login");
             }
-          })
+          });
         }
       }
     }
@@ -90,6 +123,8 @@ export default {
 <style scoped lang="less">
 @color_b: #439ffa;
 .home {
+  position: relative;
+  z-index: 101;
   .van-search {
     background-color: @color_b;
     ::v-deep .van-search__content {
@@ -108,7 +143,14 @@ export default {
       background-color: @color_b;
     }
   }
-
+  ::v-deep .warpper_scroll {
+    position: absolute;
+    height: calc(100vh - 98px - 50px);
+    border: 1px solid red;
+    box-sizing: border-box;
+    overflow: hidden;
+    overflow-y: auto;
+  }
   .footer_block {
     height: 50px;
     background: #439ffa;
@@ -116,13 +158,7 @@ export default {
     bottom: 0;
     z-index: 1;
   }
-  .back_top {
-    position: fixed;
-    top: 80%;
-    right: 45px;
-    // top: 0;
-    // right: 0;
-  }
+  
   .edit {
     position: fixed;
     // top: 62px;

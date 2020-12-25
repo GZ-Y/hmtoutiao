@@ -1,19 +1,27 @@
 <template>
   <div class="comment_popup">
-    <van-action-sheet v-model="show" title="回复评论" @close="onCommentPopupSheet">
-      <div class="content">
-        <unit-item :unit-list="currentList">
-          <div class="all_reply" slot="all_reply">全部回复</div>
-        </unit-item>
-      </div>
 
-      <unit-item :unit-list="replyList[currentIndex]"></unit-item>
+    <van-cell class="currentItem_cell">
+      <unit-item :results="currentItem" />
+    </van-cell>
 
-      <div class="bottom_button">
-        <van-button round @click="onCommentReply">回复评论</van-button>
-      </div>
-      <add-comments :comment-show="isCommentReplyShow" @onCloseCommentReply="onCloseCommentReply" @onRelease="onRelease" />
+    <van-cell-group>
+      <van-cell title="全部回复" />
+    </van-cell-group>
+    <van-list v-model="loading" :finished="finished" finished-text="我也是有底线的哦！" @load="getArticlesComment">
+      <van-cell v-for="(results,index) in resList" :key="index">
+        <unit-item :results="results" />
+      </van-cell>
+    </van-list>
+
+    <div class="bottom_button">
+      <van-button round @click="onCommentReply">回复评论</van-button>
+    </div>
+
+    <van-action-sheet v-model="addCommentShow" title="回复评论" @close="onCommentPopupSheet">
+      <add-comments @onRelease="onRelease" />
     </van-action-sheet>
+
   </div>
 </template>
 
@@ -30,10 +38,12 @@ export default {
   data() {
     return {
       show: false,
-      isCommentReplyShow: false,
+      loading: false,
+      finished: false,
       currentList: [],
       replyList: [],
-      resList: []
+      resList: [],
+      addCommentShow: false
     };
   },
   props: {
@@ -50,53 +60,42 @@ export default {
       default() {
         return {};
       }
-    },
-    currentIndex: {
-      type: Number,
-      required: true
     }
   },
   components: {
     UnitItem,
     AddComments
   },
-  
-
   watch: {
     commentShow(val) {
       this.show = val;
-      // if (this.show) {
-      //   this.getArticlesComment();
-      // }
     },
     currentItem(val) {
-      this.currentList = [];
-      this.currentList.push(val);
-      this.getArticlesComment();
-    },
-    currentIndex(val) {
-      console.log(val);
+      console.log(val.com_id);
     }
   },
+  mounted() {
+    console.log(this.currentItem);
+  },
+  destroyed() {
+    console.log("组件已经销毁");
+  },
+
   methods: {
-    // onOpen() {
-    //   this.getArticlesComment();
-    // },
     //获取评论的回复
     async getArticlesComment() {
       const { data } = await getArticlesCommentData({
         type: "c",
         source: this.currentItem.com_id
       });
-      console.log(data);
-      const { results } = data.data;
-      this.resList = results;
-      this.replyList.unshift(this.resList);
-      console.log(this.replyList);
-
-    },
-    onCommentPopup(index) {
-      console.log(index);
+      const { results, total_count } = data.data;
+      this.resList.push(...results);
+      if (this.resList < total_count) {
+        this.loading = false;
+      } else {
+        this.finished = true;
+        console.log("已经没有更多回复");
+      }
     },
     //回复评论
     async onRelease(mes) {
@@ -109,35 +108,23 @@ export default {
         console.log(data);
         const { new_obj } = data.data;
         this.resList.unshift(new_obj);
-        
-        this.isCommentReplyShow = false;
-        console.log("回复评论成功");
+        mes = "";
+        this.addCommentShow = false;
       } catch (err) {
         console.log(err);
       }
     },
-    onCloseCommentReply(show) {
-      this.isCommentReplyShow = show;
-    },
     onCommentReply() {
-      this.isCommentReplyShow = !this.isCommentReplyShow;
+      this.addCommentShow = true;
     },
     onCommentPopupSheet() {
-      this.$emit("onCommentPopupSheet", this.show);
+      this.addCommentShow = false;
     }
   }
 };
 </script>
 <style scoped lang='less'>
 .van-action-sheet {
-  height: 100%;
-  /deep/ .van-cell {
-    border-bottom: none;
-    .h_content {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
   .all_reply {
     font-size: 15px;
     padding: 10px 0;

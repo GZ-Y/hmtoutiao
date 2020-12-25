@@ -1,11 +1,7 @@
 <template>
   <div class="add_comments">
-    <van-action-sheet v-model="show" title="评论" @close="onClose">
-      <div class="content">
-        <van-field v-model.trim="message" rows="2" type="textarea" maxlength="50" placeholder="请输入您的评论内容" show-word-limit />
-        <van-button type="default" text="发布" size='small' :disabled="disabled" @click="onRelease"></van-button>
-      </div>
-    </van-action-sheet>
+    <van-field v-model.trim="message" rows="2" type="textarea" maxlength="50" placeholder="请输入您的评论内容" show-word-limit />
+    <van-button type="default" text="发布" size='small' :disabled="disabled" @click="onRelease"></van-button>
   </div>
 </template>
 <script>
@@ -18,12 +14,7 @@ export default {
       disabled: false
     };
   },
-  props: {
-    commentShow: {
-      type: Boolean,
-      default: false
-    }
-  },
+  
   created() {
     this.disabled = true;
   },
@@ -36,11 +27,6 @@ export default {
     }
   },
   methods: {
-    onClose() {
-      this.message = "";
-      this.$emit("onClose", this.show);
-      this.$emit('onCloseCommentReply',this.show)
-    },
     onRelease() {
       this.$emit("onRelease", this.message);
     }

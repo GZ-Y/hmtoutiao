@@ -1,5 +1,5 @@
 <template>
-  <div class="home-content">
+  <div class="home-content" ref="homeContentRef" @scroll="onScroll">
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh" :success-duration="3000">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <van-cell v-for="item in list" :key="item.aut_id" :to="{path:'/articles/'+item.art_id}">
@@ -23,12 +23,16 @@
         </van-cell>
       </van-list>
     </van-pull-refresh>
+    <back-top class="back_top" @click.native="onBackTop" v-show="backTopShow" />
   </div>
 </template>
 
 <script>
-import { getChannelsArticlesData } from "../../../utils/home.js";
-import dayjs from 'dayjs'
+import { getChannelsArticlesData } from "@/utils/home.js";
+import dayjs from "dayjs";
+import { animation,toTop } from "@/plugins/animation";
+// import { setTimeout } from "timers";
+import BackTop from "@/components/BackTop";
 
 export default {
   name: "HomeContent",
@@ -39,19 +43,33 @@ export default {
       loading: false,
       finished: false,
       isLoading: false,
+      backTopShow: false,
       token: 0
     };
   },
   props: {
     channel: {
       type: Object,
-      required: true
+      required: true,
+      default: () => {}
+    },
+    arrList: {
+      type: Array,
+      default: () => []
     }
   },
-  // updated(){
-  //   console.log(this.list);
-  // },
+  components: {
+    BackTop
+  },
+
   methods: {
+    onBackTop() {
+      toTop(this.homeContent)
+    },
+    onScroll() {
+      this.homeContent = this.$refs.homeContentRef;
+      this.backTopShow = this.homeContent.scrollTop > 1000 ? true : false;
+    },
     //下拉刷新
     async onRefresh() {
       const { data } = await getChannelsArticlesData({
@@ -66,18 +84,22 @@ export default {
     },
     //上拉加载更多
     async onLoad() {
-      const { data } = await getChannelsArticlesData({
-        channel_id: this.channel.id,
-        timestamp: this.timestamp || Date.now(),
-        with_top: 1
-      });
-      const { results: res, pre_timestamp: time } = data.data;
-      this.list.push(...res);
+      try {
+        const { data } = await getChannelsArticlesData({
+          channel_id: this.channel.id,
+          timestamp: this.timestamp || Date.now(),
+          with_top: 1
+        });
+        const { results: res, pre_timestamp: time } = data.data;
+        this.list.push(...res);
+        this.loading = false;
 
-      this.loading = false;
-      this.timestamp = time;
-      if (res.length === 0) {
-        this.finished = true;
+        this.timestamp = time;
+        if (res.length === 0) {
+          this.finished = true;
+        }
+      } catch (err) {
+        console.log(err);
       }
     }
   }
@@ -109,9 +131,9 @@ export default {
       .slot_block {
         height: calc(107px - 42px);
         background-color: white;
-      };
-      .bottom_info{
-        span:not(:last-child){
+      }
+      .bottom_info {
+        span:not(:last-child) {
           margin-right: 10px;
         }
       }
@@ -122,6 +144,13 @@ export default {
         height: 100px;
       }
     }
+  }
+  .back_top {
+    position: fixed;
+    top: 80%;
+    right: 45px;
+    // top: 0;
+    // right: 0;
   }
 }
 </style>

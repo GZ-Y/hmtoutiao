@@ -41,7 +41,7 @@ export default {
   .h_content {
     position: relative;
     box-sizing: border-box;
-    padding: 15px;
+    padding: 15px 0px;
     display: flex;
 
     .title_text {

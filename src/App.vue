@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
@@ -13,7 +15,7 @@ export default {
   beforeCreate() {
     if (!window.performance.navigation.type == 1) {
       alert("欢迎来到头条号");
-    } 
+    }
   }
 };
 </script>
