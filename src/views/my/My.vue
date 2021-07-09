@@ -32,7 +32,7 @@
     </div>
     <div class="header_not_login" v-else>
       <div class="containe">
-        <van-image width="70" height="70" round src="" />
+        <van-image width="70" height="70" round :src="require('@/assets/image/phone.png')"/>
         <span @click="jumpLogin">未登录/注册</span>
       </div>
     </div>
@@ -71,6 +71,7 @@ export default {
   methods: {
     async getUserInfo(){
       const {data} = await getUserInfoData();
+      console.log(data);
       this.perInfo = data.data
     },
     editInfo() {
@@ -114,6 +115,7 @@ export default {
       ::v-deep .van-image {
         width: 70px;
         height: 70px;
+        margin-left: .266667rem
       }
       ::v-deep .van-button {
         width: 55px;

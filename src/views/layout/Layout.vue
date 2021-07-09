@@ -11,7 +11,7 @@
 
 <script>
   export default {
-    name:'',
+    name:'Layout',
     data() {
       return {
         active:"/home"

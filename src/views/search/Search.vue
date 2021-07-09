@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" @focus="searchRelated" @blur="searchResult" @search="onSearch" @input="onInput" />
+    <van-search v-model="value" shape="round" placeholder="请输入搜索关键词" @focus="searchRelated" show-action action-text @cancel='$router.go(-1)' @blur="searchResult" @search="onSearch" @input="onInput" />
     <van-cell-group>
       <van-cell title="" v-if="!isDelete">
         <div slot="default">

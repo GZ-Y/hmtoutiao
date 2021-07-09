@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
+    <keep-alive :include="['Layout']">
       <router-view/>
     </keep-alive>
   </div>
@@ -12,11 +12,11 @@ export default {
   data() {
     return {};
   },
-  beforeCreate() {
-    if (!window.performance.navigation.type == 1) {
-      alert("欢迎来到头条号");
-    }
-  }
+  // beforeCreate() {
+  //   if (!window.performance.navigation.type == 1) {
+  //     alert("欢迎来到头条号");
+  //   }
+  // }
 };
 </script>
 

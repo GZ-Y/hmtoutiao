@@ -6,10 +6,6 @@
         <home-content :channel="channel" />
       </van-tab>
     </van-tabs>
-    <!-- <scroll class="warpper_scroll" :pull-up-load='true' @scroll="onScroll" ref="scroller">
-      <test-scroll :arr-list="arrList" @imageLoad="imageLoad" />
-    </scroll> -->
-    
     <div class="edit">
       <van-icon @click="onShow" name="wap-nav" size="0.6rem" />
     </div>
@@ -31,13 +27,10 @@ import EditContent from "./components/EditContent";
 import TestScroll from "./components/TestScroll";
 
 import Scroll from "../../components/Scroll";
-// import { setTimeout } from "timers";
-// Vue.use(ImagePreview)
+
 import Vue from "vue";
-import vuescroll from "vuescroll/dist/vuescroll-slide";
-import "vuescroll/dist/vuescroll.css";
 import { setTimeout } from "timers";
-Vue.use(vuescroll);
+
 export default {
   name: "Home",
   data() {
@@ -48,47 +41,24 @@ export default {
       isDialogShow: false,
       isBackTop: false,
       currentIndex: 0,
-     
     };
   },
   components: {
     HomeContent,
     EditContent,
     Scroll,
-    vuescroll,
     TestScroll
   },
   created() {
-    // if (this.user) {
-    //   this.getUserChannels();
-    // }
     this.getUserChannels();
   },
-
   computed: {
     ...mapState(["user"]),
     channelItem() {
       return this.channels[this.currentIndex];
     }
   },
-
   methods: {
-    // imageLoad() {
-    //   console.log("全部加载完成");
-    //   this.$refs.scroller[0].refresh();
-      
-    // },
-    // onPullingUp() {
-    //   console.log("上拉加载更多");
-    // },
-    // onPullingDown() {
-    //   console.log("下拉刷新");
-    // },
-    // onScroll(position) {
-    //   console.log(position.y);
-    // },
-
-   
     closeDialog(index) {
       this.isDialogShow = false;
       this.active = index;

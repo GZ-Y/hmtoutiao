@@ -1,6 +1,6 @@
 <template>
-  <div>
-    欢迎来到问答平台
+  <div class="qa">
+    <van-nav-bar title="问答平台" />
   </div>
 </template>
 

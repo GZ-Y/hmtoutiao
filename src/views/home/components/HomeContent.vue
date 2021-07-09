@@ -30,7 +30,7 @@
 <script>
 import { getChannelsArticlesData } from "@/utils/home.js";
 import dayjs from "dayjs";
-import { animation,toTop } from "@/plugins/animation";
+import { animation, toTop } from "@/plugins/animation";
 // import { setTimeout } from "timers";
 import BackTop from "@/components/BackTop";
 
@@ -44,7 +44,8 @@ export default {
       finished: false,
       isLoading: false,
       backTopShow: false,
-      token: 0
+      token: 0,
+      scrollTopVal: 0
     };
   },
   props: {
@@ -64,11 +65,12 @@ export default {
 
   methods: {
     onBackTop() {
-      toTop(this.homeContent)
+      toTop(this.homeContent);
     },
     onScroll() {
       this.homeContent = this.$refs.homeContentRef;
       this.backTopShow = this.homeContent.scrollTop > 1000 ? true : false;
+      this.scrollTopVal = this.homeContent.scrollTop;
     },
     //下拉刷新
     async onRefresh() {
@@ -101,6 +103,12 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    }
+  },
+  //返回页面时保持住之前滚动的距离状态
+  activated() {
+    if (this.scrollTopVal > 0) {
+      this.homeContent.scrollTop = this.scrollTopVal;
     }
   }
 };
